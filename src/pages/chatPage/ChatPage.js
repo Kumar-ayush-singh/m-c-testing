@@ -79,14 +79,14 @@ const Wrapper = styled.section`
   width: 100vw;
   height: 100vh;
 
+  *{
+    color: white;
+  }
+
   .container {
     display: flex;
     height: 100%;
     width: 100%;
-
-    *{
-      color: white;
-    }
 
     .chatNavBar {
       --container-width: 80px;

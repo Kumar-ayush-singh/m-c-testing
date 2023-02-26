@@ -1,16 +1,17 @@
 import axios from "axios";
-import React, { useState, useRef, useEffect } from "react";
-import { useSelector, useDispatch} from "react-redux";
+import React, { useState, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import Message from "./components/Message";
-import { addChatMessage } from "../../store/slices/chatSlice";
+import { addChatMessage, setCurrentReceiver } from "../../store/slices/chatSlice";
 import { FaPaperclip } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { TiDeleteOutline } from "react-icons/ti";
+import WelcomeCard from "./components/cards/WelcomeCard";
 
 
 const CurrentChat = () => {
-  const {Id: chatId, messages, receiverName} = useSelector((store) => store.chat);
+  const { Id: chatId, messages, receiverName } = useSelector((store) => store.chat.currentChat);
   const { user } = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const textarea = useRef(null);
@@ -25,12 +26,13 @@ const CurrentChat = () => {
       const { data } = await axios.post("http://localhost:3000/api/message/", {
         chatId: chatId,
         senderId: user.userId,
+        // receiverId: receiverId,
         text: msg,
       });
       console.log(data);
       dispatch(addChatMessage({
-        message: {...data}, 
-        userId : user.userId
+        message: { ...data },
+        userId: user.userId
       }));
       setMsg("");
     } catch (error) {
@@ -38,78 +40,94 @@ const CurrentChat = () => {
     }
   };
 
-  function handelScroll(e){
+  function handelScroll(e) {
     const isfullyScrolled = (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight);
     setIsMessagesScrolled(isfullyScrolled);
   }
 
 
   return (
-    <Wrapper>
-      <div className="head">
-        <div className="userInfo-container">
-          <div className="img-container">
-            <img src="userpic" alt="chat user"/>
-          </div>
-          <div>
-            <span>{receiverName}</span>
-            <span>Online</span>
-          </div>
-        </div>
-        <div className="functionality-container">
-          <ul>
-            <li>
-              <FaPaperclip/>
-            </li>
-            <li>
-              <MdDelete/>
-            </li>
-          </ul>
+    <>
+      {
+        chatId === "" ? (
+          <WelcomeCard />
+        ) 
+        : 
+        (
+          <Wrapper>
+            <div className="head">
+              <div className="userInfo-container">
+                <div className="img-container">
+                  <img src="userpic" alt="chat user" />
+                </div>
+                <div>
+                  <span>{receiverName}</span>
+                  <span>Online</span>
+                </div>
+              </div>
+              <div className="functionality-container">
+                <ul>
+                  <li>
+                    <FaPaperclip />
+                  </li>
+                  <li>
+                    <MdDelete />
+                  </li>
+                </ul>
 
-          <div className="close-message">
-            <TiDeleteOutline/>
-          </div>
-        </div>
-      </div>
-      <div className="background-container">
-        <div className={
-          (isMessagesScrolled ? "": "scrolling-down" ) + " messages custom-scroll"
-        } 
-        onScroll={(e) => handelScroll(e)}
-        >
-          {messages.length > 0 ? (
-              messages.map((message, i) => {
-                return (<Message key={i} message={message} />);
-              })
-          ) : (
-            <h2 className="msg-404">
-              No messages found.
-            </h2>
-          )}
-        </div>
+                <div className="close-message" onClick={()=>{
+                  dispatch(setCurrentReceiver({
+                    name: "",
+                    Id: "",
+                  }));
+                }}>
+                  <TiDeleteOutline />
+                </div>
+              </div>
+            </div>
+            <div className="background-container">
+              <div className={
+                (isMessagesScrolled ? "" : "scrolling-down") + " messages custom-scroll"
+              }
+                onScroll={(e) => handelScroll(e)}
+              >
+                {messages.length > 0 ? (
+                  messages.map((message, i) => {
+                    return (<Message key={i} message={message} />);
+                  })
+                ) : (
+                  <h2 className="msg-404">
+                    No messages found.
+                  </h2>
+                )}
+              </div>
 
-        <div className="text-editor">
-          <div className="wrap-auto-resize">
-            <div className="textarea-cpy">{msg}</div>
-            <textarea
-              className="custom-scroll"
-              name="message"
-              rows="1"
-              placeholder="write your message here"
-              focus="true"
-              useRef={textarea}
-              value={msg}
-              onChange={(e) => setMsg(e.target.value)}
-            ></textarea>
-          </div>
-          <div>
-            <button onClick={handlMsgeSubmit}>Send</button>
-          </div>
-        </div>
-      </div>
-    </Wrapper>
+              <div className="text-editor">
+                <div className="wrap-auto-resize">
+                  <div className="textarea-cpy">{msg}</div>
+                  <textarea
+                    className="custom-scroll"
+                    name="message"
+                    rows="1"
+                    placeholder="write your message here"
+                    focus="true"
+                    useRef={textarea}
+                    value={msg}
+                    onChange={(e) => setMsg(e.target.value)}
+                  ></textarea>
+                </div>
+                <div>
+                  <button onClick={handlMsgeSubmit}>Send</button>
+                </div>
+              </div>
+            </div>
+          </Wrapper>
+        )
+      }
+    </>
   );
 };
+
 const Wrapper = styled.section`
   height: 100%;
   width: 100%;

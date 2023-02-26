@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-// import PersonCard from "../../components/helper/PersonCard";
 import styled from "styled-components";
 import axios from "axios";
 import UserCard from "./cards/UserCard";
+
 
 const SearchUsers = () => {
   const [users, setUsers] = useState([]);
@@ -11,9 +11,13 @@ const SearchUsers = () => {
     setUsers(data);
     console.log(users);
   };
+
+  
   useEffect(() => {
     getAllUser();
   }, []);
+
+
   return (
     <Wrapper>
       <div className="search-bar-user">

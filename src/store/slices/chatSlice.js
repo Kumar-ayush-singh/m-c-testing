@@ -2,9 +2,13 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  Id: "",
-  messages: [],
-  receiverName: "",
+  allChats: [], //[{_id, members[], newMessage, status}]
+  currentChat: {
+    Id: "",
+    messages: [],
+    receiverName: "",
+    receiverId: "",
+  }
 };
 
 //for adding classes to aggange message in ui
@@ -79,24 +83,28 @@ const chatSlice = createSlice({
     addChatMessage: (state, { payload }) => {
       console.log("chat message");
       console.log(payload);
-      state.messages.push(payload.message);
-      arrangeMessages(state.messages, payload.userId , true);
+      state.currentChat.messages.push(payload.message);
+      arrangeMessages(state.currentChat.messages, payload.userId , true);
     },
-    setReceiverName: (state, { payload }) => {
-      console.log(`current co-chater is ${payload}`);
-      state.receiverName = payload;
+    setCurrentReceiver: (state, { payload }) => {
+      console.log(`current co-chater is ${payload.name} with id : ${payload.Id}` );
+      state.currentChat.receiverName = payload.name;
+      state.currentChat.receiverId = payload.Id;
+    },
+    setAllChats: (state, { payload }) => {
+      state.allChats = payload;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(startConversation.fulfilled, (state, { payload }) => {
-        state.messages = payload.messages;
-        state.Id = payload.chatId;
-        arrangeMessages(state.messages, payload.userId);
+        state.currentChat.messages = payload.messages;
+        state.currentChat.Id = payload.chatId;
+        arrangeMessages(state.currentChat.messages, payload.userId);
       })
   }
 });
 
 
-export const { setChatId, setReceiverName, addChatMessage} = chatSlice.actions;
+export const { setChatId, setCurrentReceiver, addChatMessage, setAllChats} = chatSlice.actions;
 export default chatSlice.reducer;

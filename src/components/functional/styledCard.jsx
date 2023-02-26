@@ -14,7 +14,7 @@ const StyledCard = styled.section`
     background-color: var(--thm-transparent-color);
     border-radius: 15px;
     padding: 15px 20px;
-    box-shadow: 0px 0px 3px var(--thm-background-color) inset;
+    box-shadow: 0px 0px 2px var(--thm-background-color) inset;
     // position: relative;
 
     // &::before, &::after{

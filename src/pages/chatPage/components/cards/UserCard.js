@@ -3,7 +3,7 @@ import axios from "axios";
 import dummuPic from "../../assets/dummy-pic.jpeg";
 import { useSelector, useDispatch } from "react-redux";
 import StyledCard from "../../../../components/functional/styledCard";
-import { startConversation, setReceiverName } from "../../../../store/slices/chatSlice";
+import { startConversation, setCurrentReceiver } from "../../../../store/slices/chatSlice";
 import { setChatSection } from "../../../../store/slices/chatNavSlice";
 
 
@@ -11,7 +11,6 @@ const UserCard = ({ name, Id }) => {
   console.log(name + " : " + Id);
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.user);
-  const { chatSection } = useSelector((store) => store.chatNav);
 
   
   const createChat = async () => {
@@ -24,7 +23,10 @@ const UserCard = ({ name, Id }) => {
       
       dispatch(startConversation({chatId: data._id, userId: user.userId}));
       dispatch(setChatSection("recentChats"));
-      dispatch(setReceiverName(name));
+      dispatch(setCurrentReceiver({
+        name: name,
+        Id: Id,
+      }));
       console.log(data);
     } catch (error) {
       console.log(error);
