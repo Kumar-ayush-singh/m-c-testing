@@ -3,6 +3,7 @@ import {
     createAsyncThunk,
 } from "@reduxjs/toolkit";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
     addUserToLocalStorage,
@@ -14,8 +15,8 @@ import {
 const localStorageUser = getUserFromLocalStorage();
 
 const initialState = {
-    logIn: localStorageUser.token ? true : false,
-    user: localStorageUser.user,
+    isLogedIn: localStorageUser.token ? true : false,
+    user: localStorageUser.user || {},
     //   user: {},
 };
 
@@ -62,18 +63,22 @@ const userSlice = createSlice({
     initialState: initialState,
     reducers: {
         setLogIn: (state) => {
-            state.logIn = true;
+            state.isLogedIn = true;
         },
         setLogInFalse: (state) => {
-            state.logIn = false;
+            state.isLogedIn = false;
         },
-        // setUser:(state,{payload:{name}})
+        logOutUser: (state) => {
+            state.isLogedIn = false;
+            state.user = {};
+            localStorage.removeItem("user");
+        }
     },
     extraReducers: (builder) => {
         builder
             .addCase(registerUser.fulfilled, (state, { payload }) => {
                 console.log(payload);
-                state.logIn = true;
+                state.isLogedIn = true;
                 state.user = payload.user;
                 addUserToLocalStorage(payload);
                 toast.success("Welcome " + payload.user.userName, {
@@ -95,7 +100,7 @@ const userSlice = createSlice({
             })
             .addCase(loginUser.fulfilled, (state, { payload }) => {
                 console.log(payload);
-                state.logIn = true;
+                state.isLogedIn = true;
                 state.user = payload.user;
                 removeUserFromLocalStorage();
                 addUserToLocalStorage(payload);
@@ -119,6 +124,6 @@ const userSlice = createSlice({
     },
 });
 
-export const { setLogIn, setLogInFalse } = userSlice.actions;
+export const { setLogIn, setLogInFalse, logOutUser } = userSlice.actions;
 
 export default userSlice.reducer;

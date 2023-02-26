@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import Navbar from "../../components/helper/Navbar";
 import authImg from "./assets/auth-img-2.png";
 // import Footer from "../../components/helper/Footer";
 import LogIn from "./LogIn";
@@ -14,8 +15,9 @@ const Auth = () => {
     };
 
     return (
+      <>
+        <Navbar />
         <Wrapper>
-            {/* <Footer */}
             <div className="container">
                 <div className="left">
                     <h2>
@@ -44,6 +46,7 @@ const Auth = () => {
                 </div>
             </div>
         </Wrapper>
+      </>
     );
 };
 const Wrapper = styled.section`

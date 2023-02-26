@@ -14,7 +14,6 @@ import 'react-toastify/dist/ReactToastify.css';
 const App = () => {
   return (
     <>
-      <Navbar />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/auth" element={<Auth />} />

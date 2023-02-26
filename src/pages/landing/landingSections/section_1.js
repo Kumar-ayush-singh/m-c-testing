@@ -15,7 +15,7 @@ top: 0px;
 `;
 const RightBackgroundBlock = styled.div`
 position: absolute;
-background-color: rgb(255, 255, 255, 0.04);
+background-color: var(--thm-transparent-color);
 height:737px;
 width: 737px;
 top: 50px;

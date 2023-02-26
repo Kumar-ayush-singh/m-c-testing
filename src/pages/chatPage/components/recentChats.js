@@ -1,7 +1,8 @@
 import axios from "axios";
+import styled from "styled-components";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import PersonCard from "./cards/PersonCard";
+import ChatCard from "./cards/ChatCard";
 
 
 const RecentChats = () => {
@@ -9,7 +10,7 @@ const RecentChats = () => {
     const { user } = useSelector((store) => store.user);
 
 
-    const getChat = async () => {
+    const getChats = async () => {
         try {
             const { data } = await axios.get(
                 `http://localhost:3000/api/chat/${user.userId}`
@@ -22,19 +23,23 @@ const RecentChats = () => {
     };
 
     useEffect(() => {
-        getChat();
+        getChats();
     }, []);
 
     if (chats) {
         return (
-            <div>
+            <Wrapper>
                 {chats.map(({ members, _id }, i) => {
-                    return <PersonCard key={i} members={members} chatId={_id} />;
+                    return <ChatCard key={i} members={members} chatId={_id} />;
                 })}
-            </div>
+            </Wrapper>
         );
     }
     return <h4>loading ....</h4>;
 };
+
+const Wrapper = styled.div`
+`;
+
 
 export default RecentChats;

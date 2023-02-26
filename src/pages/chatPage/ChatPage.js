@@ -1,89 +1,238 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { BiGroup } from "react-icons/bi";
-import { BsFillChatDotsFill, BsSearch } from "react-icons/bs";
+import { BiGroup, BiLogOutCircle, BiUser } from "react-icons/bi";
+import { BsFillChatDotsFill } from "react-icons/bs";
 import ChatBody from "./chatBody";
 import CurrentChatMessages from "./CurrentChatMessages";
+import { logOutUser } from "../../store/slices/userPageSlice";
+import { FaHome } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setChatSection } from "../../store/slices/chatNavSlice";
+// import Navbar from "../../components/helper/Navbar";
+
 
 
 
 const ChatPage = () => {
 
-  const [chatBody, setChatBody] = useState("recentChats");
+  const { chatSection } = useSelector( store => store.chatNav);
+
+  const dispatch = useDispatch();
   function navHandler(pram){
-    setChatBody(pram);
+    dispatch(setChatSection(pram));
   }
 
   return (
-    <Wrapper>
-      <div className="container">
-        <div className="left">
+    <>
+      {/* <Navbar/> */}
+      <Wrapper>
+        <div className="container">
+
           <div className="chatNavBar">
-            <button
-              onClick={() => {
+            <ul>
+              <li className={chatSection === "groupChats" ? "active":""} onClick={() => {
                 navHandler("groupChats");
-              }}
-            >
-              <BiGroup />
-            </button>
-            <button
-              onClick={() => {
+              }}>
+                <BiGroup />
+              </li>
+              <li className={chatSection === "recentChats" ? "active":""} onClick={() => {
                 navHandler("recentChats");
-              }}
-            >
-              <BsFillChatDotsFill />
-            </button>
-            <button
-              onClick={() => {
+              }}>
+                <BsFillChatDotsFill />
+              </li>
+              <li className={chatSection === "searchUsers" ? "active":""} onClick={() => {
                 navHandler("searchUsers");
-              }}
-            >
-              <BsSearch />
-            </button>
+              }}>
+                <BiUser />
+              </li>
+            </ul>
+            <div className="high-order-buttons">
+              <button className="home">
+                <Link to="/">
+                  <FaHome/>
+                </Link>
+              </button>
+              <button className="log-out" onClick={logOutUser}>
+                <Link to="/">
+                  <BiLogOutCircle />
+                </Link>
+              </button>
+            </div>
           </div>
-          <div className="list">
-            <ChatBody body={chatBody}/>
+
+          <div className="chat-container">
+              <ChatBody/>
+          </div>
+          <div className="current-chat-container">
+            <CurrentChatMessages />
           </div>
         </div>
-        <div className="right">
-          <CurrentChatMessages />
-        </div>
-      </div>
-    </Wrapper>
+      </Wrapper>
+    </>
   );
 };
 const Wrapper = styled.section`
+ --thm-svg-color: #9e9e9e;
+ --thm-svg-active-color: var(--thm-primary-color); 
+
+  width: 100vw;
+  height: 100vh;
+
   .container {
     display: flex;
-    min-height: 100vh;
+    height: 100%;
     width: 100%;
-    .left {
-      width: 30%;
-      background-color: orange;
-      .chatNavBar {
+
+    *{
+      color: white;
+    }
+
+    .chatNavBar {
+      --container-width: 80px;
+      width: var(--container-width);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+
+
+
+      ul {
         display: flex;
-        justify-content: space-around;
-        padding: 1rem;
-        button {
-          border: none;
-          background-color: transparent;
-          font-size: 2rem;
+        flex-direction: column;
+        width: 100%;
+
+        li{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 10px 20px;
+          margin: 10px 0px;
           cursor: pointer;
+          position: relative;
+
+          &, *{
+            transition: 0.2s ease;
+          }
+
+          svg{
+            width: var(--container-width);
+            height: 30px;
+            transform: scale(1);
+            transform-origin: center center;
+          }
+
+          &.active, &:hover{
+            svg{
+              transform: scale(1.2);
+            }
+          }
+          
+          &.active{
+            svg{
+              fill: var(--thm-svg-active-color);
+            }
+
+            &::after{
+              content: "";
+              top: 0;
+              height: 100%;
+            }
+
+          }
+          &::after{
+            content: "";
+            position: absolute;
+            display: block;
+            background: var(--thm-svg-active-color);
+            top: 50%;
+            left: 0px;
+            width: 5px;
+            border-radius: 3px;
+            height: 0px;
+            transition: 0.2s linear;
+          }
         }
       }
+
+      .high-order-buttons{
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        width: var(--container-width);
+        padding: 8px;
+
+
+        .home{
+          width: 100%;
+          height: 40px;
+          padding: 5px;
+          margin-bottom: 5px;
+          background: transparent;
+          border: none;
+          outline: none;
+  
+          svg{
+            height: 100%;
+            width: 100%;
+            cursor: pointer;
+
+            // @keyframe home-anima{
+            //   from{
+            //     transform: scale(1);
+            //   }
+            //   to{
+            //     transform: scale(0.8);
+            //   }
+            // }
+
+            // &:hover{
+            //   animation: home-anima 0.5s linear infinite;
+            // }
+          }
+        }
+
+        .log-out{
+          height: 40px;
+          width: 100%;
+          background: #fbd547;
+          border-radius: 5px;
+          padding: 5px;
+          overflow: hidden;
+          cursor: pointer;
+
+
+          svg{
+            fill: black;
+            height: 100%;
+            width: 100%;
+            transform: rotate(-180deg);
+            transition: 0.15s ease;
+          }
+
+          &:hover svg{
+            transform: rotate(360deg);
+          }
+        }
+
+      }
     }
-    .right {
-      width: 70%;
+
+    .chat-container {
+      flex-basis: 400px;
+      width: 400px;
+      height: 100vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .current-chat-container {
+      width: calc(100% - 80px - 400px);
       height: 100vh;
     }
   }
-
-  /* .chatNavBar {
-    background-color: red;
-  } */
 `;
-export default ChatPage;
 
 
-
-// 1. remove chatPageSlice
+export default React.memo(ChatPage);

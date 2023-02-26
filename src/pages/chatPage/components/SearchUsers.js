@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 // import PersonCard from "../../components/helper/PersonCard";
 import styled from "styled-components";
 import axios from "axios";
-import ChatCard from "./cards/ChatCard";
+import UserCard from "./cards/UserCard";
 
 const SearchUsers = () => {
   const [users, setUsers] = useState([]);
@@ -21,7 +21,7 @@ const SearchUsers = () => {
         <button>search</button>
       </div>
       {users.map(({name, _id}, i) => {
-        return <ChatCard key={i} name={name} Id={_id} />;
+        return <UserCard key={i} name={name} Id={_id} />;
       })}
     </Wrapper>
   );

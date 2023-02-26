@@ -14,6 +14,23 @@ body {
   background-color: #111827;
 }
 
+.custom-scroll{
+  overflow-y: auto;
+  /* -ms-overflow-style: none; Internet Explorer 10+ */
+  /* scrollbar-width: none; */
+}
+.custom-scroll::-webkit-scrollbar {
+  /* display: none; Safari and Chrome */
+  width: 20px;
+  background: linear-gradient(90deg, transparent 0% 45%, var(--thm-transparent-color) 45% 55%, transparent 55% 100%);
+}
+.custom-scroll::-webkit-scrollbar-thumb{
+  border-radius: 500px;
+  background: linear-gradient(90deg, transparent 0% 37.5%, rgba(214, 128, 128, 0.15) 37.5% 62.5%, transparent 62.5% 100%);
+  width: 5px;
+}
+
+
 :root {
   /* dark shades of primary color*/
   --clr-primary-1: #f2f2f2;
@@ -30,8 +47,12 @@ body {
   --clr-primary-10: hsl(22, 31%, 88%);
 
   /* theme colors */
+  --thm-background-color: #111827;
+  --thm-gradient: linear-gradient(300deg, var(--thm-primary-color), var(--thm-secondary-color));;
   --thm-primary-color: #9816f6;
   --thm-secondary-color: #3e2794;
+  --thm-transparent-color: rgb(255, 255, 255, 0.04);
+  --thm-transparent2-color: rgba(255, 255, 255, 0.1);
 }
 h1,
 h2,

@@ -1,18 +1,16 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 
 const Message = ({ message }) => {
 
-  const { user } = useSelector((store) => store.user);
-  const { text, senderId } = message;
+  const { text, classes } = message;
 
   return (
     <Wrapper>
-      <div className={`${senderId === user.userId ? "message own" : "message "} `}>
-        <div className="msg-top">name</div>
-        <div className="msg-bottom">{ text }</div>
+      <div className={"message" + classes}>
+        <div className="msg-text">{ text }</div>
+        {/* <div className="msg-time">06:36 PM</div> */}
       </div>
     </Wrapper>
   );
@@ -21,19 +19,50 @@ const Wrapper = styled.section`
   .message {
     width: 100%;
     display: flex;
-    flex-direction: column;
-  }
-  .own {
-    align-items: flex-end;
-    /* background-color: yellow; */
-    .msg-bottom {
-      background-color: yellow;
+    margin-top: 5px;
+    
+    &.left{
+      justify-content: flex-start;
+      background-color: var(--thm-other-message-background);
+
+      &.start{
+        .msg-text{
+          border-bottom-left-radius: 2px;
+        }
+      }
+      &.end{
+        .msg-text{
+          border-top-left-radius: 2px;
+        }
+      }
+    }
+    
+    &.right{
+      justify-content: flex-end;
+      background-color: var(--thm-own-message-background);
+
+      &.start{
+        .msg-text{
+          border-bottom-right-radius: 2px;
+        }
+      }
+      &.end{
+        .msg-text{
+          border-top-right-radius: 2px;
+        }
+      }
+    }
+
+    .msg-text{
+      max-width: 90%;
+      padding: 20px 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      // min-height: 60px;
+      border-radius: 15px;
+      background-color: var(--thm-transparent-color);
     }
   }
-  .msg-bottom {
-    background-color: gray;
-    padding: 0.5rem 1rem;
-    width: fit-content;
-  }
 `;
-export default Message;
+export default React.memo(Message);
