@@ -1,40 +1,55 @@
 import axios from "axios";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import Message from "./components/Message";
 import { addChatMessage, setCurrentReceiver } from "../../store/slices/chatSlice";
+import { setChatNotification, removeChatNotification } from "../../store/slices/realTimeSlice";
 import { FaPaperclip } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { TiDeleteOutline } from "react-icons/ti";
 import WelcomeCard from "./components/cards/WelcomeCard";
+import socket from "../../util/socket.io";
 
 
 const CurrentChat = () => {
-  const { Id: chatId, messages, receiverName } = useSelector((store) => store.chat.currentChat);
+  const { Id: chatId, messages, receiverName, receiverId } = useSelector((store) => store.chat.currentChat);
   const { user } = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const textarea = useRef(null);
+  const messageConteiner = useRef(null);
 
 
   const [msg, setMsg] = useState("");
   const [isMessagesScrolled, setIsMessagesScrolled] = useState(true);
 
-
   const handlMsgeSubmit = async () => {
     try {
-      const { data } = await axios.post("http://localhost:3000/api/message/", {
+      // const { data } = await axios.post("http://localhost:3000/api/message/", {
+      //   chatId: chatId,
+      //   senderId: user.userId,
+      //   text: msg,
+      // });
+
+      console.log(receiverName + " is receiver name " + receiverId + " is receiver id ");
+
+      socket.emit("client-send-msg", {
         chatId: chatId,
         senderId: user.userId,
-        // receiverId: receiverId,
+        receiverId: receiverId,
         text: msg,
-      });
-      console.log(data);
-      dispatch(addChatMessage({
-        message: { ...data },
-        userId: user.userId
-      }));
+      }, (res)=>{
+        if(res.error){
+          throw Error(res.error);
+        }
+        console.log(res.text + " >>>> is reached to server ");
+        dispatch(addChatMessage({
+          message: { ...res },
+          userId: user.userId
+        }));
+      })
       setMsg("");
+      messageConteiner.current.scrollTo(0, messageConteiner.current.scrollHeight);
     } catch (error) {
       console.log(error);
     }
@@ -45,6 +60,23 @@ const CurrentChat = () => {
     setIsMessagesScrolled(isfullyScrolled);
   }
 
+
+  useEffect( () => {
+    socket.on("server-send-msg", (message) => {
+      if(message.senderId === receiverId){
+        dispatch(addChatMessage({message: {...message}, userId: user.userId}));
+      }
+      else{
+        dispatch(setChatNotification({...message}));
+      }
+    });
+
+    dispatch(removeChatNotification(receiverId));
+
+    return () => {
+      socket.off("server-send-msg");
+    }
+  }, [])
 
   return (
     <>
@@ -86,9 +118,8 @@ const CurrentChat = () => {
               </div>
             </div>
             <div className="background-container">
-              <div className={
-                (isMessagesScrolled ? "" : "scrolling-down") + " messages custom-scroll"
-              }
+              <div className={(isMessagesScrolled ? "" : "scrolling-down") + " messages custom-scroll"}
+                ref={messageConteiner}
                 onScroll={(e) => handelScroll(e)}
               >
                 {messages.length > 0 ? (
@@ -111,7 +142,7 @@ const CurrentChat = () => {
                     rows="1"
                     placeholder="write your message here"
                     focus="true"
-                    useRef={textarea}
+                    ref={textarea}
                     value={msg}
                     onChange={(e) => setMsg(e.target.value)}
                   ></textarea>

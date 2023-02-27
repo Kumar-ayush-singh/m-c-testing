@@ -24,7 +24,7 @@ const RecentChats = () => {
             console.log("All Chats of user : ");
             console.log(data);
 
-            if(data.length){
+            if(data.length < 1){
                 dispatch(setChatSection("searchUsers"));
             }
         } catch (error) { }

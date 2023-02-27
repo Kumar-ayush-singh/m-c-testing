@@ -21,13 +21,18 @@ const ChatBody = () => {
   return (
     <Wrapper>
       <div className="head">
-        <h3>{
-        chatSection === "recentChats" ?
-          "Chat" :
-          chatSection === "groupChats" ?
-            "Groups" :
-            "Users"}</h3>
-        <div>
+
+        {!isSearching && 
+          <h3>{
+          chatSection === "recentChats" ?
+            "Chat" :
+            chatSection === "groupChats" ?
+              "Groups" :
+              "Users"
+          }
+          </h3>
+        }
+        <div className={isSearching ? "searching-container": ""}>
           <input type="search" className={isSearching ? "searching": ""}/>
           {
           isSearching ? 
@@ -83,6 +88,10 @@ position: relative;
       gap: 15px;
       cursor: pointer;
 
+      &.searching-container{
+        width: 100%;
+      }
+
       input{
         border: 1px solid var(--thm-primary-color);
         background: var(--thm-transparent-color);
@@ -96,8 +105,15 @@ position: relative;
 
         &.searching{
           opacity: 1;
-          width: 200px;
+          width: 100%;
+          flex-grow: 1;
+          flex-shrink: 1;
         }
+      }
+
+      &>svg{
+        flex-grow: 0;
+        flex-shrink: 0;
       }
     }
   }

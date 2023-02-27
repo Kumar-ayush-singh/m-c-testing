@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { BiGroup, BiLogOutCircle, BiUser } from "react-icons/bi";
 import { BsFillChatDotsFill } from "react-icons/bs";
@@ -9,19 +9,54 @@ import { FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setChatSection } from "../../store/slices/chatNavSlice";
+import socket from "../../util/socket.io";
+import { addOnlineUser, removeOfflineUser, setOnlineUsers } from "../../store/slices/realTimeSlice";
 // import Navbar from "../../components/helper/Navbar";
-
 
 
 
 const ChatPage = () => {
 
-  const { chatSection } = useSelector( store => store.chatNav);
+  const { chatSection } = useSelector( store => store.chatNav );
+  const { user } = useSelector( store => store.user );
 
   const dispatch = useDispatch();
   function navHandler(pram){
     dispatch(setChatSection(pram));
   }
+
+  useEffect( () => {
+
+    function handelConnection(){
+      socket.emit("register-connection", {"userId": user.userId, "socketId": socket.id}, (res) => {
+        console.log(res);
+        dispatch(setOnlineUsers(res.onlineUsers));
+      });
+    }
+    if(socket.connected){
+      handelConnection();
+    }
+    else{
+      socket.on("connect", () => {
+        handelConnection();
+      })
+    }
+
+    //for handelling user connection and disconnection
+    socket.on("new-user-connected", (userId) => {
+      dispatch(addOnlineUser(userId));
+    });
+    socket.on("user-disconnected", (userId) => {
+      dispatch(removeOfflineUser(userId));
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("register-connection");
+      socket.off("new-user-connected");
+      socket.off("user-disconnected");
+    }
+  }, []);
 
   return (
     <>

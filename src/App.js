@@ -1,7 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Footer from "./components/helper/Footer";
-import Navbar from "./components/helper/Navbar";
 import Auth from "./pages/auth/Auth";
 import ChatPage from "./pages/chatPage/ChatPage";
 import Landing from "./pages/landing/Landing";

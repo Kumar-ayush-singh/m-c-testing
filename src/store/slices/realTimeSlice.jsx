@@ -1,16 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    onlineUsers: [],
+    onlineUsers: {},
     chatNotifications: {}
 }
 
-const socketIoSlice = createSlice({
-    name: "socketIo",
-    initialState = initialState,
+const realTimeSlice = createSlice({
+    name: "realTime",
+    initialState: initialState,
     reducers: {
+        setOnlineUsers: (state, { payload }) => {
+            state.onlineUsers = payload;
+        },
         addOnlineUser: (state, { payload }) => {
-            state.onlineUsers.push(payload);
+            state.onlineUsers[payload] = true;
             console.log(`${payload} is now online`);
         },
         removeOfflineUser: (state, { payload }) => {
@@ -28,8 +31,8 @@ const socketIoSlice = createSlice({
             }
             else{
                 state.chatNotifications[payload.chatId] = {
-                    newMsgCount = 0,
-                    lastMessage = payload.text,
+                    newMsgCount: 0,
+                    lastMessage: payload.text,
                 }
             }
         },
@@ -38,3 +41,6 @@ const socketIoSlice = createSlice({
         }
     }
 })
+
+export const { setOnlineUsers, addOnlineUser, removeOfflineUser, setChatNotification, removeChatNotification } = realTimeSlice.actions;
+export default realTimeSlice.reducer;

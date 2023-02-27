@@ -11,6 +11,9 @@ const UserCard = ({ name, Id }) => {
   console.log(name + " : " + Id);
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.user);
+  const { onlineUsers } = useSelector(store => store.realTime);
+  const { receiverId } = useSelector(store => store.chat.currentChat);
+  console.log(useSelector(store => store));
 
   
   const createChat = async () => {
@@ -41,6 +44,7 @@ const UserCard = ({ name, Id }) => {
         <div className="card-info">
           <h5>{name}</h5>
         </div>
+        <span className={ onlineUsers[receiverId] ? "connection-status online" : "connection-status"}></span>
       </div>
     </StyledCard>
   );
