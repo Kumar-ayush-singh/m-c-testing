@@ -8,9 +8,9 @@ const LogIn = () => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { logIn } = useSelector((store) => store.user);
+    const { isLogedIn } = useSelector((store) => store.user);
 
-    console.log(logIn);
+    console.log(isLogedIn);
 
     let initialState = {
         email: "",
@@ -35,8 +35,8 @@ const LogIn = () => {
     };
 
     useEffect(() => {
-        logIn && navigate("/chat-page");
-    }, [logIn]);
+        isLogedIn && navigate("/chat-page");
+    }, [isLogedIn]);
 
     return (
         <Wrapper>

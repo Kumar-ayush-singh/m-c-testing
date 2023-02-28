@@ -15,6 +15,7 @@ import socket from "../../util/socket.io";
 const CurrentChat = () => {
   const { Id: chatId, messages, receiverName, receiverId } = useSelector((store) => store.chat.currentChat);
   const { user } = useSelector((store) => store.user);
+  const { onlineUsers } = useSelector(store => store.realTime);
   const dispatch = useDispatch();
   const textarea = useRef(null);
   const messageConteiner = useRef(null);
@@ -94,7 +95,10 @@ const CurrentChat = () => {
                 </div>
                 <div>
                   <span>{receiverName}</span>
-                  <span>Online</span>
+                  {
+                    onlineUsers.receiverId ? 
+                    <span>Online</span> : null
+                  }
                 </div>
               </div>
               <div className="functionality-container">

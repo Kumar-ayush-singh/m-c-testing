@@ -17,7 +17,7 @@ const Register = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [values, setValue] = useState(initialState);
-    const { logIn } = useSelector((store) => store.user);
+    const { isLogedIn } = useSelector((store) => store.user);
 
 
     const handleChange = (e) => {
@@ -31,12 +31,12 @@ const Register = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(values);
-        dispatch(registerUser({...values}))
+        dispatch(registerUser({...values, email: values.email}))
     };
 
     useEffect(() => {
-        logIn && navigate("/chat-page");
-    }, [logIn]);
+        isLogedIn && navigate("/chat-page");
+    }, [isLogedIn]);
 
     return (
         <Wrapper>

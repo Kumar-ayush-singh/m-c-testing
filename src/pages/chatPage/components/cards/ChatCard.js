@@ -44,6 +44,7 @@ const ChatCard = (props) => {
         <div className="img-notification-container">
           <img src={dummuPic} alt="" />
           {
+            chatNotifications[props.chatId] &&
             chatNotifications[props.chatId].newMsgCount > 1 ?
             <div>{chatNotifications[props.chatId].newMsgCount}</div>
             :
@@ -53,13 +54,14 @@ const ChatCard = (props) => {
         <div className="card-info new-message">
           <h5>{otherMember.name}</h5>
           {
+            chatNotifications[props.chatId] &&
             chatNotifications[props.chatId].lastMessage ?
             <span>{chatNotifications[props.chatId].lastMessage}</span>
             :
             null
           }
         </div>
-        <span className={ onlineUsers[otherMember.Id] ? "connection-status online" : "connection-status"}></span>
+        <span className={ onlineUsers[otherMember.Id] ? "online" : "offline"}></span>
       </div>
     </StyledCard>
   );

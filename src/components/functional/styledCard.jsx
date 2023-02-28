@@ -98,11 +98,11 @@ const StyledCard = styled.section`
 
     &>span, div.img-notification-container{
       display: block;
-      flex-shrink: 0px;
-      flex-grow: 0px;
+      flex-shrink: 0;
+      flex-grow: 0;
     }
     
-    &>span{
+    &>span.online{
       width: 12px;
       height: 12px;
       border-radius: 50%;

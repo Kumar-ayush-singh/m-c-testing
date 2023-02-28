@@ -44,7 +44,7 @@ const UserCard = ({ name, Id }) => {
         <div className="card-info">
           <h5>{name}</h5>
         </div>
-        <span className={ onlineUsers[receiverId] ? "connection-status online" : "connection-status"}></span>
+        <span className={ onlineUsers[receiverId] ? "online" : "offline"}></span>
       </div>
     </StyledCard>
   );
