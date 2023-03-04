@@ -4,27 +4,30 @@ import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import Message from "./components/Message";
 import { addChatMessage, setCurrentReceiver } from "../../store/slices/chatSlice";
-import { setChatNotification, removeChatNotification } from "../../store/slices/realTimeSlice";
+import { setChatNotification, removeChatNotification, updateViewedMessage, updateLastMessage } from "../../store/slices/realTimeSlice";
 import { FaPaperclip } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { TiDeleteOutline } from "react-icons/ti";
 import WelcomeCard from "./components/cards/WelcomeCard";
 import socket from "../../util/socket.io";
+import UnreadTag from "./components/cards/unreadTag";
 
 
 const CurrentChat = () => {
-  const { Id: chatId, messages, receiverName, receiverId } = useSelector((store) => store.chat.currentChat);
+  const { Id: chatId, messages, otherMember } = useSelector((store) => store.chat.currentChat);
   const { user } = useSelector((store) => store.user);
-  const { onlineUsers } = useSelector(store => store.realTime);
+  const { onlineUsers, chatNotifications } = useSelector(store => store.realTime);
   const dispatch = useDispatch();
   const textarea = useRef(null);
-  const messageConteiner = useRef(null);
+  const messageContainer = useRef(null);
 
 
   const [msg, setMsg] = useState("");
   const [isMessagesScrolled, setIsMessagesScrolled] = useState(true);
 
   const handlMsgeSubmit = async () => {
+    //remove unred msg tag
+    dispatch(updateViewedMessage(chatId));
     try {
       // const { data } = await axios.post("http://localhost:3000/api/message/", {
       //   chatId: chatId,
@@ -32,25 +35,25 @@ const CurrentChat = () => {
       //   text: msg,
       // });
 
-      console.log(receiverName + " is receiver name " + receiverId + " is receiver id ");
+      console.log(otherMember.name + " is receiver name " + otherMember._id + " is receiver id ");
 
       socket.emit("client-send-msg", {
         chatId: chatId,
         senderId: user.userId,
-        receiverId: receiverId,
+        receiverId: otherMember._id,
         text: msg,
       }, (res)=>{
-        if(res.error){
+        if(res.status != 200){
           throw Error(res.error);
         }
-        console.log(res.text + " >>>> is reached to server ");
+        console.log(res.data.text + " >>>> is reached to server ");
         dispatch(addChatMessage({
-          message: { ...res },
+          message: { ...(res.data) },
           userId: user.userId
         }));
+        dispatch(updateLastMessage({ ...res.data }))
       })
       setMsg("");
-      messageConteiner.current.scrollTo(0, messageConteiner.current.scrollHeight);
     } catch (error) {
       console.log(error);
     }
@@ -64,21 +67,33 @@ const CurrentChat = () => {
 
   useEffect( () => {
     socket.on("server-send-msg", (message) => {
-      if(message.senderId === receiverId){
+      console.log(message.senderId + " and receiver id is " + otherMember._id);
+      if(message.chatId === chatId){
         dispatch(addChatMessage({message: {...message}, userId: user.userId}));
+        dispatch(updateLastMessage({...message}));
+        dispatch(updateViewedMessage(chatId));
+        socket.emit("message-viewed", chatId, message._id, (res)=> {
+          console.log("message is viewed in current message with status " + res.status);
+        });
       }
       else{
         dispatch(setChatNotification({...message}));
       }
     });
 
-    dispatch(removeChatNotification(receiverId));
-
     return () => {
       socket.off("server-send-msg");
     }
-  }, [])
+  }, [chatId]);
 
+  useEffect( () => {
+    if(messageContainer.current){
+      messageContainer.current.scrollTo(0, messageContainer.current.scrollHeight);
+    }
+  }, [messages]);
+
+
+  let a = false;
   return (
     <>
       {
@@ -94,9 +109,9 @@ const CurrentChat = () => {
                   <img src="userpic" alt="chat user" />
                 </div>
                 <div>
-                  <span>{receiverName}</span>
+                  <span>{otherMember.name}</span>
                   {
-                    onlineUsers.receiverId ? 
+                    onlineUsers[otherMember._id] ? 
                     <span>Online</span> : null
                   }
                 </div>
@@ -123,12 +138,32 @@ const CurrentChat = () => {
             </div>
             <div className="background-container">
               <div className={(isMessagesScrolled ? "" : "scrolling-down") + " messages custom-scroll"}
-                ref={messageConteiner}
+                ref={messageContainer}
                 onScroll={(e) => handelScroll(e)}
               >
                 {messages.length > 0 ? (
+                  chatNotifications[chatId].lastMessage && chatNotifications[chatId].lastViewedMessage &&
+                  chatNotifications[chatId].lastViewedMessage._id === chatNotifications[chatId].lastMessage._id ||
+                  chatNotifications[chatId].lastMessage.senderId === user.userId ?
                   messages.map((message, i) => {
                     return (<Message key={i} message={message} />);
+                  })
+                  :
+                  messages.map((message, i) => {
+                    return (
+                      <>
+                      {
+                        !chatNotifications[chatId].lastViewedMessage ||
+                        chatNotifications[chatId].lastViewedMessage._id === message._id ?
+                        <>
+                          <Message key={i} message={message} />
+                          <UnreadTag/>
+                        </>
+                        :
+                        <Message key={i} message={message} />
+                      }
+                      </>
+                    )
                   })
                 ) : (
                   <h2 className="msg-404">
@@ -139,7 +174,7 @@ const CurrentChat = () => {
 
               <div className="text-editor">
                 <div className="wrap-auto-resize">
-                  <div className="textarea-cpy">{msg}</div>
+                  <div className="textarea-cpy">{msg + " "}</div>
                   <textarea
                     className="custom-scroll"
                     name="message"
@@ -267,6 +302,7 @@ const Wrapper = styled.section`
       flex-shrink: 1;
       flex-grow: 1;
       position: relative;
+      margin-right: -20px;
 
       .msg-404{
         height: 100%;
@@ -293,9 +329,11 @@ const Wrapper = styled.section`
       align-items: flex-end;
       flex-shrink: 0;
       flex-grow: 0;
-      padding: 10px;
+      padding: 10px 0px;
       position: relative;
+      gap: 20px;
 
+      //for shadow below msg container
       &::before{
         --height: 10px;
         content: "";
@@ -313,8 +351,13 @@ const Wrapper = styled.section`
 
       
       &>.wrap-auto-resize{
-        width: calc(100% - 100px);
+        width: 100%;
         display: grid;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid var(--thm-primary-color);
+        flex-grow: 1;
+        flex-shrink: 1;
 
         &>.textarea-cpy{
           white-space: pre-wrap;
@@ -324,13 +367,13 @@ const Wrapper = styled.section`
 
         &>textarea, &>.textarea-cpy {
           width: 100%;
-          max-height: 100px;
-          padding: 8px;
-          border-radius: 8px;
-          border: 1px solid var(--thm-primary-color);
+          max-height: 6.2em;
+          margin-right: -8px; //equal to parent padding
+          border: none;
           outline: none;
           background-color: transparent;
           font-size: 15px;
+          line-height: 1.25em;
           resize: none;
           grid-area: 1/1/2/2;
         }
@@ -342,6 +385,8 @@ const Wrapper = styled.section`
       
       &>div:last-child{
         display: flex;
+        flex-shrink: 0;
+        flex-grow: 0;
         justify-content: center;
         align-items: center;
         

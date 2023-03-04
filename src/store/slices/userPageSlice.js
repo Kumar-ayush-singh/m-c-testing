@@ -10,6 +10,7 @@ import {
     getUserFromLocalStorage,
     removeUserFromLocalStorage,
 } from "../../util/localStorage";
+import socket from "../../util/socket.io";
 
 
 const localStorageUser = getUserFromLocalStorage();
@@ -71,7 +72,8 @@ const userSlice = createSlice({
         logOutUser: (state) => {
             state.isLogedIn = false;
             state.user = {};
-            localStorage.removeItem("user");
+            removeUserFromLocalStorage();
+            socket.disconnect();
         }
     },
     extraReducers: (builder) => {

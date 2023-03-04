@@ -24,9 +24,10 @@ const RecentChats = () => {
             console.log("All Chats of user : ");
             console.log(data);
 
-            if(data.length < 1){
-                dispatch(setChatSection("searchUsers"));
-            }
+
+            // if(data.length < 1){
+            //     dispatch(setChatSection("searchUsers"));
+            // }
         } catch (error) { }
     };
 
@@ -53,8 +54,8 @@ const RecentChats = () => {
             )
             :
             (
-                allChats.map(({ members, _id }, i) => {
-                    return <ChatCard key={i} members={members} chatId={_id} />;
+                allChats.map((chat, i) => {
+                    return <ChatCard key={i} chat={chat} />;
                 })
             )}
         </Wrapper>

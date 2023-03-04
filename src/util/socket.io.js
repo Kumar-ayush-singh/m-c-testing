@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const RECONNECTION_LIMIT = 10;
+const RECONNECTION_LIMIT = 10000;
 const socket = io('http://localhost:3000'); //add option in second parameter an object
 
 export default socket;

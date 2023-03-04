@@ -17,30 +17,48 @@ const realTimeSlice = createSlice({
             console.log(`${payload} is now online`);
         },
         removeOfflineUser: (state, { payload }) => {
-
-            const index = state.onlineUsers.indexOf(payload);
-            if(index > -1){
-                state.onlineUsers.splice(index, 1);
-            }
+            const { [payload]: value, ...removedOfflineUsers } = state.onlineUsers;
+            state.onlineUsers = removedOfflineUsers;
             console.log(`${payload} gone offline`);
         },
         setChatNotification: (state, { payload }) => {
-            if(state.chatNotifications[payload.chatId]){
-                (state.chatNotifications[payload.chatId].newMsgCount)++;
-                state.chatNotifications[payload.chatId].lastMessage = payload.text;
+            if(payload.dataFromDB){
+                if(state.chatNotifications[payload.chatId]){
+                    return;
+                }
+                state.chatNotifications[payload.chatId] = {
+                    newMsgCount: payload.newMsgCount,
+                    lastMessage: payload.lastMessage,
+                    lastViewedMessage: payload.lastViewedMessage,
+                }
+            }
+            else if(state.chatNotifications[payload.chatId]){
+                const numb = JSON.stringify(state.chatNotifications[payload.chatId].newMsgCount);
+                state.chatNotifications[payload.chatId].newMsgCount = Number(numb) + 1;
+                state.chatNotifications[payload.chatId].lastMessage = payload;
             }
             else{
                 state.chatNotifications[payload.chatId] = {
-                    newMsgCount: 0,
-                    lastMessage: payload.text,
+                    newMsgCount: 1,
+                    lastMessage: payload,
                 }
             }
         },
         removeChatNotification: (state, { payload }) => {
-            delete state.chatNotifications[payload];
+            state.chatNotifications[payload].newMsgCount = 0;
+        },
+        updateLastMessage: ( state, { payload }) => {
+            state.chatNotifications[payload.chatId].lastMessage = {
+                _id: payload._id,
+                senderId: payload.senderId,
+                text: payload.text,
+            }
+        },
+        updateViewedMessage: ( state, { payload } ) => {
+            state.chatNotifications[payload].lastViewedMessage = JSON.parse(JSON.stringify(state.chatNotifications[payload].lastMessage));
         }
     }
 })
 
-export const { setOnlineUsers, addOnlineUser, removeOfflineUser, setChatNotification, removeChatNotification } = realTimeSlice.actions;
+export const { setOnlineUsers, addOnlineUser, removeOfflineUser, setChatNotification, removeChatNotification, updateViewedMessage, updateLastMessage } = realTimeSlice.actions;
 export default realTimeSlice.reducer;

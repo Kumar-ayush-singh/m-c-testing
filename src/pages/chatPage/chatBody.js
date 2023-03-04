@@ -87,6 +87,8 @@ position: relative;
       align-items: center;
       gap: 15px;
       cursor: pointer;
+      width: 100%;
+      justify-content: flex-end;
 
       &.searching-container{
         width: 100%;

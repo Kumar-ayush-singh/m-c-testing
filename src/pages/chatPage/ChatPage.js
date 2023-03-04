@@ -6,7 +6,7 @@ import ChatBody from "./chatBody";
 import CurrentChatMessages from "./CurrentChatMessages";
 import { logOutUser } from "../../store/slices/userPageSlice";
 import { FaHome } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setChatSection } from "../../store/slices/chatNavSlice";
 import socket from "../../util/socket.io";
@@ -21,8 +21,14 @@ const ChatPage = () => {
   const { user } = useSelector( store => store.user );
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   function navHandler(pram){
     dispatch(setChatSection(pram));
+  }
+  function handleLogout(){
+    dispatch(logOutUser());
+    navigate('/');
   }
 
   useEffect( () => {
@@ -88,7 +94,7 @@ const ChatPage = () => {
                   <FaHome/>
                 </Link>
               </button>
-              <button className="log-out" onClick={logOutUser}>
+              <button className="log-out" onClick={handleLogout}>
                 <Link to="/">
                   <BiLogOutCircle />
                 </Link>

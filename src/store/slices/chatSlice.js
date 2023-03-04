@@ -6,8 +6,7 @@ const initialState = {
   currentChat: {
     Id: "",
     messages: [],
-    receiverName: "",
-    receiverId: "",
+    otherMember: {},
   }
 };
 
@@ -45,8 +44,6 @@ const arrangeMessages = (messages, userId, addedNewMessage) => {
         messages[i-1].classes = messages[i-1].classes.replace(" start", " ");
       }
     }
-
-    console.log(addedNewMessage + ` ${i}`);
   }
 }
 
@@ -88,12 +85,15 @@ const chatSlice = createSlice({
     },
     setCurrentReceiver: (state, { payload }) => {
       console.log(`current co-chater is ${payload.name} with id : ${payload.Id}` );
-      state.currentChat.receiverName = payload.name;
-      state.currentChat.receiverId = payload.Id;
+      state.currentChat.otherMember.name = payload.name;
+      state.currentChat.otherMember._id = payload.Id;
     },
     setAllChats: (state, { payload }) => {
       state.allChats = payload;
     },
+    // arrangeAllChats: (state, { payload }) => {
+    //   state.allChats.splice
+    // }
   },
   extraReducers: (builder) => {
     builder

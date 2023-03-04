@@ -23,7 +23,9 @@ const Wrapper = styled.section`
     
     &.left{
       justify-content: flex-start;
-      background-color: var(--thm-other-message-background);
+      .msg-text{
+        background: var(--thm-other-message-background);
+      }
 
       &.start{
         .msg-text{
@@ -39,7 +41,9 @@ const Wrapper = styled.section`
     
     &.right{
       justify-content: flex-end;
-      background-color: var(--thm-own-message-background);
+      .msg-text{
+        background: var(--thm-own-message-background);
+      }
 
       &.start{
         .msg-text{
@@ -55,9 +59,11 @@ const Wrapper = styled.section`
 
     .msg-text{
       max-width: 90%;
+      min-width: 50px;
       padding: 20px 10px;
       display: flex;
-      justify-content: center;
+      word-break: break-word;
+      // justify-content: center;
       align-items: center;
       // min-height: 60px;
       border-radius: 15px;

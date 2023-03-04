@@ -53,6 +53,10 @@ body {
   --thm-secondary-color: #3e2794;
   --thm-transparent-color: rgb(255, 255, 255, 0.04);
   --thm-transparent2-color: rgba(255, 255, 255, 0.1);
+  --thm-own-message-background: var(--thm-gradient);
+  --thm-other-message-background: var(--thm-transparent-color);
+
+
 }
 h1,
 h2,
