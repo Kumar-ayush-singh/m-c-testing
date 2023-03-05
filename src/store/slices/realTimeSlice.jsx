@@ -55,7 +55,9 @@ const realTimeSlice = createSlice({
             }
         },
         updateViewedMessage: ( state, { payload } ) => {
-            state.chatNotifications[payload].lastViewedMessage = JSON.parse(JSON.stringify(state.chatNotifications[payload].lastMessage));
+            if(state.chatNotifications[payload]){
+                state.chatNotifications[payload].lastViewedMessage = JSON.parse(JSON.stringify(state.chatNotifications[payload].lastMessage));
+            }
         }
     }
 })

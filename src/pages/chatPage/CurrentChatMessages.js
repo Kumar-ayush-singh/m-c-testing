@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import Message from "./components/Message";
-import { addChatMessage, setCurrentReceiver } from "../../store/slices/chatSlice";
+import { addChatMessage, moveChatToTop, setCurrentReceiver } from "../../store/slices/chatSlice";
 import { setChatNotification, removeChatNotification, updateViewedMessage, updateLastMessage } from "../../store/slices/realTimeSlice";
 import { FaPaperclip } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -51,7 +51,8 @@ const CurrentChat = () => {
           message: { ...(res.data) },
           userId: user.userId
         }));
-        dispatch(updateLastMessage({ ...res.data }))
+        dispatch(updateLastMessage({ ...res.data }));
+        dispatch(moveChatToTop({chatId: chatId}));
       })
       setMsg("");
     } catch (error) {
@@ -79,6 +80,9 @@ const CurrentChat = () => {
       else{
         dispatch(setChatNotification({...message}));
       }
+
+      //sending this chat at top of chat stack
+      dispatch(moveChatToTop({chatId: message.chatId}));
     });
 
     return () => {
@@ -142,7 +146,7 @@ const CurrentChat = () => {
                 onScroll={(e) => handelScroll(e)}
               >
                 {messages.length > 0 ? (
-                  chatNotifications[chatId].lastMessage && chatNotifications[chatId].lastViewedMessage &&
+                  chatNotifications[chatId] && chatNotifications[chatId].lastViewedMessage &&
                   chatNotifications[chatId].lastViewedMessage._id === chatNotifications[chatId].lastMessage._id ||
                   chatNotifications[chatId].lastMessage.senderId === user.userId ?
                   messages.map((message, i) => {

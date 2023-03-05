@@ -91,9 +91,20 @@ const chatSlice = createSlice({
     setAllChats: (state, { payload }) => {
       state.allChats = payload;
     },
-    // arrangeAllChats: (state, { payload }) => {
-    //   state.allChats.splice
-    // }
+    moveChatToTop: (state, { payload }) => {
+      let chatToMove;
+      const AllShiftedChat = state.allChats.filter((chat) => {
+        if(chat._id !== payload.chatId){
+          return true;
+        }
+        else{
+          chatToMove = {...chat};
+        }
+      });
+
+      AllShiftedChat.splice(0, 0, chatToMove);
+      state.allChats = AllShiftedChat;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -106,5 +117,5 @@ const chatSlice = createSlice({
 });
 
 
-export const { setChatId, setCurrentReceiver, addChatMessage, setAllChats} = chatSlice.actions;
+export const { setChatId, setCurrentReceiver, addChatMessage, setAllChats, moveChatToTop} = chatSlice.actions;
 export default chatSlice.reducer;
