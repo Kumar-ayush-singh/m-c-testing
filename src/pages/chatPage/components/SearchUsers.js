@@ -20,10 +20,6 @@ const SearchUsers = () => {
 
   return (
     <Wrapper>
-      <div className="search-bar-user">
-        <input />
-        <button>search</button>
-      </div>
       {users.map(({name, _id}, i) => {
         return <UserCard key={i} name={name} Id={_id} />;
       })}

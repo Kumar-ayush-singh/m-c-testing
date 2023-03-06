@@ -6,6 +6,7 @@ import SearchUsers from "./components/SearchUsers";
 import { BsSearch } from "react-icons/bs";
 import styled from "styled-components";
 import { FiDelete } from "react-icons/fi";
+import ChatNavBar from "./components/chatNavBar";
 
 
 
@@ -22,25 +23,30 @@ const ChatBody = () => {
     <Wrapper>
       <div className="head">
 
-        {!isSearching && 
-          <h3>{
-          chatSection === "recentChats" ?
-            "Chat" :
-            chatSection === "groupChats" ?
-              "Groups" :
-              "Users"
+        <div>
+          {!isSearching && 
+            <h3>{
+            chatSection === "recentChats" ?
+              "Chat" :
+              chatSection === "groupChats" ?
+                "Groups" :
+                "Users"
+            }
+            </h3>
           }
-          </h3>
-        }
-        <div className={isSearching ? "searching-container": ""}>
-          <input type="search" className={isSearching ? "searching": ""}/>
-          {
-          isSearching ? 
-            <FiDelete onClick={togleSearching} className="icon"/> 
-            : 
-            <BsSearch onClick={togleSearching} className="icon"/>
-          }
+          <div className={isSearching ? "searching-container": ""}>
+            <input type="search" className={isSearching ? "searching": ""}/>
+            {
+            isSearching ? 
+              <FiDelete onClick={togleSearching} className="icon"/> 
+              : 
+              <BsSearch onClick={togleSearching} className="icon"/>
+            }
+          </div>
         </div>
+        <nav>
+          <ChatNavBar/>
+        </nav>
       </div>
       <div className="chat-section-container custom-scroll">
         {
@@ -60,26 +66,53 @@ const Wrapper = styled.div`
 
 width: 100%;
 height: 100%;
-padding: 20px;
 position: relative;
 
+@media (min-width: 950px){
+  padding-top: 20px;
+}
+
 &>.head{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-rows: 1fr;
+  align-items: space-between;
   height: 100px;
   position: sticky;
   top: 0;
+  padding: 0px 20px;
+  border-radius: 0px 0px 15px 15px;
 
+
+  @media(max-width: 950px){
+    margin: 0;
+    padding-top: 20px;
+    background: var(--thm-transparent-color);
+  }
+
+  &>*{
+    @media (max-width: 950px){
+      height: 50%;
+    }
+  }
+
+
+  &>div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     &>h3{
       margin: 0;
       font-size: 30px;
+
+      @media (max-width: 950px){
+        font-size: 25px;
+      }
     }
 
     .icon{
-      width: 25px;
-      height: 25px;
+      width: 20px;
+      height: 20px;
     }
 
     &>div{
@@ -97,6 +130,7 @@ position: relative;
       input{
         border: 1px solid var(--thm-primary-color);
         background: var(--thm-transparent-color);
+        outline: none;
         width: 0px;
         height: 30px;
         opacity: 0;
@@ -119,12 +153,26 @@ position: relative;
       }
     }
   }
+
+  &>nav{
+    align-self: center;
+    @media (min-width: 951px){
+      display: none;
+    }
+  }
+
 }
 
 &>.chat-section-container{
+  padding: 0px 20px;
   height: calc(100% - 100px);
   overflow-y: auto;
   overflow-x: hidden;
+  // margin-right: -20px;
+
+  @media (max-width: 950px){
+    padding-top: 10px;
+  }
 }
 `
 

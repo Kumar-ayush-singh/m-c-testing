@@ -4,7 +4,7 @@ import dummuPic from "../../assets/dummy-pic.jpeg";
 import { useSelector, useDispatch } from "react-redux";
 import StyledCard from "../../../../components/functional/styledCard";
 import { startConversation, setCurrentReceiver } from "../../../../store/slices/chatSlice";
-import { setChatSection } from "../../../../store/slices/chatNavSlice";
+import { setChatSection, setMobileViewSection } from "../../../../store/slices/chatNavSlice";
 
 
 const UserCard = ({ name, Id }) => {
@@ -30,6 +30,7 @@ const UserCard = ({ name, Id }) => {
         name: name,
         Id: Id,
       }));
+      dispatch(setMobileViewSection("currentChatContainer"));
       console.log(data);
     } catch (error) {
       console.log(error);

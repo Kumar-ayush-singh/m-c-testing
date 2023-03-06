@@ -5,7 +5,10 @@ const StyledCard = styled.section`
   --thm-online-status-color: var(--thm-primary-color);
   --thm-selected-chat-color: linear-gradient(300deg, var(--thm-primary-color), var(--thm-secondary-color));
 
-  margin-bottom: 8px;
+  margin-bottom: 5px;
+  @media (max-width: 950px){
+    margin: 0;
+  }
 
   .card {
     display: flex;
@@ -14,31 +17,21 @@ const StyledCard = styled.section`
     background-color: var(--thm-transparent-color);
     border-radius: 15px;
     padding: 15px 20px;
-    box-shadow: 0px 0px 2px var(--thm-background-color) inset;
+    // box-shadow: 0px 0px 2px var(--thm-background-color) inset;
     // position: relative;
 
-    // &::before, &::after{
-    //   content: "";
-    //   display: block;
-    //   width: 100%;
-    //   height: 5px;
-    //   position: absolute;
-    //   left: 0;
-    // }
-    // &::before{
-    //   top: 0;
-    //   background: linear-gradient(var(--thm-background-color), transparent);
-    // }
-    // &::after{
-    //   bottom: 0;
-    //   background: linear-gradient(transparent, var(--thm-bakcground-color));
-    // }
+    @media(max-width: 950px){
+      background-color: transparent;
+      padding: 10px;
+    }
 
     &:hover{
       background: var(--thm-transparent2-color);
     }
     &.active{
-      background: var(--thm-selected-chat-color);
+      @media (min-width: 750px){
+        background: var(--thm-selected-chat-color);
+      }
     }
 
     &>div.img-notification-container {
@@ -74,6 +67,7 @@ const StyledCard = styled.section`
       display: flex;
       flex-direction: column;
       gap: 4px;
+      overflow: hidden;
 
       h5{
         margin: 0;

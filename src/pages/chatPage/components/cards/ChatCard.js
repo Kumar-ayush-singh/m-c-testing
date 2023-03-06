@@ -6,6 +6,7 @@ import { setCurrentReceiver, startConversation } from "../../../../store/slices/
 import StyledCard from "../../../../components/functional/styledCard";
 import { removeChatNotification, setChatNotification, updateViewedMessage } from "../../../../store/slices/realTimeSlice";
 import socket from "../../../../util/socket.io";
+import { setMobileViewSection } from "../../../../store/slices/chatNavSlice";
 
 
 
@@ -25,6 +26,7 @@ const ChatCard = (props) => {
       Id: props.chat.otherMember._id,
     }));
     dispatch(startConversation({"chatId": props.chat._id, "userId": user.userId}));
+    dispatch(setMobileViewSection("currentChatContainer"));
     
     if(chatNotifications[props.chat._id] && chatNotifications[props.chat._id].newMsgCount){
       dispatch(removeChatNotification(props.chat._id));

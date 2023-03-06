@@ -3,14 +3,16 @@ import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import Message from "./components/Message";
-import { addChatMessage, moveChatToTop, setCurrentReceiver } from "../../store/slices/chatSlice";
+import { addChatMessage, closeChat, moveChatToTop, setCurrentReceiver } from "../../store/slices/chatSlice";
 import { setChatNotification, removeChatNotification, updateViewedMessage, updateLastMessage } from "../../store/slices/realTimeSlice";
 import { FaPaperclip } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdSend } from "react-icons/md";
 import { TiDeleteOutline } from "react-icons/ti";
 import WelcomeCard from "./components/cards/WelcomeCard";
 import socket from "../../util/socket.io";
 import UnreadTag from "./components/cards/unreadTag";
+import { IoIosArrowRoundBack } from "react-icons/io";
+import { setMobileViewSection } from "../../store/slices/chatNavSlice";
 
 
 const CurrentChat = () => {
@@ -109,8 +111,13 @@ const CurrentChat = () => {
           <Wrapper>
             <div className="head">
               <div className="userInfo-container">
-                <div className="img-container">
-                  <img src="userpic" alt="chat user" />
+                <div className="back-container" onClick={()=>{
+                  dispatch(setMobileViewSection("chatBody"));
+                }}>
+                  <IoIosArrowRoundBack/>
+                  <div className="img-container">
+                    <img src="userpic" alt="chat user" />
+                  </div>
                 </div>
                 <div>
                   <span>{otherMember.name}</span>
@@ -135,6 +142,7 @@ const CurrentChat = () => {
                     name: "",
                     Id: "",
                   }));
+                  dispatch(closeChat());
                 }}>
                   <TiDeleteOutline />
                 </div>
@@ -191,7 +199,9 @@ const CurrentChat = () => {
                   ></textarea>
                 </div>
                 <div>
-                  <button onClick={handlMsgeSubmit}>Send</button>
+                  <button onClick={handlMsgeSubmit}>
+                    <MdSend/>
+                  </button>
                 </div>
               </div>
             </div>
@@ -208,6 +218,10 @@ const Wrapper = styled.section`
   padding: 20px;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 450px){
+    padding: 20px 10px 10px 10px;
+  }
   
   
   .head {
@@ -216,9 +230,29 @@ const Wrapper = styled.section`
     align-items: center;
     height: 100px;
 
+    @media ( max-width: 950px ){
+      margin-top: -20px;
+    }
+
     .userInfo-container{
       display: flex;
       gap: 15px;
+      width: 100%;
+
+      .back-container{
+        display: flex;
+        align-items: center;
+
+        
+        &>svg{
+          height: 35px;
+          width: 35px;
+          
+          @media (min-width: 750px){
+            display: none;
+          }
+        }
+      }
 
       .img-container{
         width: 60px;
@@ -236,10 +270,14 @@ const Wrapper = styled.section`
         display: flex;
         flex-direction: column;
         justify-content: center;
+        overflow: none;
+        overflow: hidden;
 
         &>span:first-child{
           font-weight: bold;
           font-size: 20px;
+          text-overflow: ellipsis;
+          overflow: hidden;
 
           &+span{
             font-size: 10px;
@@ -252,6 +290,7 @@ const Wrapper = styled.section`
 
     .functionality-container{
       display: flex;
+      display: none;
       gap: 40px;
       align-items: center;
       justify-content: space-between;
@@ -298,7 +337,16 @@ const Wrapper = styled.section`
     display: flex;
     gap: 10px;
     flex-direction: column;
-    overflow: hidden;
+    overflow: hidden;  
+
+    @media (max-width: 950px){
+      height: calc(100% - 80px);
+      padding: 10px 20px;
+    }
+
+    @media (max-width: 450px){
+      padding: 10px;
+    }
 
 
     .messages {
@@ -335,7 +383,11 @@ const Wrapper = styled.section`
       flex-grow: 0;
       padding: 10px 0px;
       position: relative;
-      gap: 20px;
+      gap: 10px;
+
+      @media (max-width: 450px){
+        padding: 0;
+      }
 
       //for shadow below msg container
       &::before{
@@ -356,6 +408,7 @@ const Wrapper = styled.section`
       
       &>.wrap-auto-resize{
         width: 100%;
+        min-height: 40px;
         display: grid;
         padding: 8px;
         border-radius: 8px;
@@ -370,7 +423,8 @@ const Wrapper = styled.section`
         }
 
         &>textarea, &>.textarea-cpy {
-          width: 100%;
+          width: calc(100% + 10px);
+          min-height: 100%;
           max-height: 6.2em;
           margin-right: -8px; //equal to parent padding
           border: none;
@@ -395,7 +449,8 @@ const Wrapper = styled.section`
         align-items: center;
         
         button {
-          width: 80px;
+          width: 40px;
+          height: 40px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -404,6 +459,11 @@ const Wrapper = styled.section`
           border: none;
           outline: none;
           border-radius: 8px;
+
+          &>svg{
+            width: 30px;
+            height: 30px;
+          }
         }
       }
     }

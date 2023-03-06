@@ -63,6 +63,7 @@ const Wrapper = styled.section`
       padding: 20px 10px;
       display: flex;
       word-break: break-word;
+      white-space: preWrap;
       // justify-content: center;
       align-items: center;
       // min-height: 60px;

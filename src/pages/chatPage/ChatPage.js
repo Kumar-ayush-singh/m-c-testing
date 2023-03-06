@@ -1,35 +1,20 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { BiGroup, BiLogOutCircle, BiUser } from "react-icons/bi";
-import { BsFillChatDotsFill } from "react-icons/bs";
 import ChatBody from "./chatBody";
 import CurrentChatMessages from "./CurrentChatMessages";
-import { logOutUser } from "../../store/slices/userPageSlice";
-import { FaHome } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { setChatSection } from "../../store/slices/chatNavSlice";
+import { useSelector, useDispatch } from "react-redux";
 import socket from "../../util/socket.io";
 import { addOnlineUser, removeOfflineUser, setOnlineUsers } from "../../store/slices/realTimeSlice";
+import ChatNavBar from "./components/chatNavBar";
 // import Navbar from "../../components/helper/Navbar";
 
 
 
 const ChatPage = () => {
 
-  const { chatSection } = useSelector( store => store.chatNav );
   const { user } = useSelector( store => store.user );
-
+  const { mobileViewSection } = useSelector( store => store.chatNav);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  function navHandler(pram){
-    dispatch(setChatSection(pram));
-  }
-  function handleLogout(){
-    dispatch(logOutUser());
-    navigate('/');
-  }
 
   useEffect( () => {
 
@@ -68,39 +53,13 @@ const ChatPage = () => {
     <>
       {/* <Navbar/> */}
       <Wrapper>
-        <div className="container">
-
-          <div className="chatNavBar">
-            <ul>
-              <li className={chatSection === "groupChats" ? "active":""} onClick={() => {
-                navHandler("groupChats");
-              }}>
-                <BiGroup />
-              </li>
-              <li className={chatSection === "recentChats" ? "active":""} onClick={() => {
-                navHandler("recentChats");
-              }}>
-                <BsFillChatDotsFill />
-              </li>
-              <li className={chatSection === "searchUsers" ? "active":""} onClick={() => {
-                navHandler("searchUsers");
-              }}>
-                <BiUser />
-              </li>
-            </ul>
-            <div className="high-order-buttons">
-              <button className="home">
-                <Link to="/">
-                  <FaHome/>
-                </Link>
-              </button>
-              <button className="log-out" onClick={handleLogout}>
-                <Link to="/">
-                  <BiLogOutCircle />
-                </Link>
-              </button>
-            </div>
-          </div>
+        <div className={(console.warn(mobileViewSection) || mobileViewSection === "currentChatContainer" ? 
+            "show-current-message-container " : "") + "container"
+          }
+        >
+          <nav>
+            <ChatNavBar/>
+          </nav>
 
           <div className="chat-container">
               <ChatBody/>
@@ -119,6 +78,8 @@ const Wrapper = styled.section`
 
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
+  position: relative;
 
   *{
     color: white;
@@ -128,149 +89,58 @@ const Wrapper = styled.section`
     display: flex;
     height: 100%;
     width: 100%;
+    transition: 0.2s ease;
 
-    .chatNavBar {
-      --container-width: 80px;
-      width: var(--container-width);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      position: relative;
+    @media (max-width: 950px){
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 0.75fr 1fr;
+      grid-auto-rows: 100%;
+    }
+    @media (max-width: 750px){
+      position: absolute;
+      top: 0;
+      left: 0;
+      grid-template-columns: 1fr 1fr;
+      width: 200%;
+    }
 
-
-
-      ul {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-
-        li{
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 10px 20px;
-          margin: 10px 0px;
-          cursor: pointer;
-          position: relative;
-
-          &, *{
-            transition: 0.2s ease;
-          }
-
-          svg{
-            width: var(--container-width);
-            height: 30px;
-            transform: scale(1);
-            transform-origin: center center;
-          }
-
-          &.active, &:hover{
-            svg{
-              transform: scale(1.2);
-            }
-          }
-          
-          &.active{
-            svg{
-              fill: var(--thm-svg-active-color);
-            }
-
-            &::after{
-              content: "";
-              top: 0;
-              height: 100%;
-            }
-
-          }
-          &::after{
-            content: "";
-            position: absolute;
-            display: block;
-            background: var(--thm-svg-active-color);
-            top: 50%;
-            left: 0px;
-            width: 5px;
-            border-radius: 3px;
-            height: 0px;
-            transition: 0.2s linear;
-          }
-        }
+    &.show-current-message-container{
+      @media( max-width: 750px){
+        left: -100%;
       }
+    }
 
-      .high-order-buttons{
-        position: absolute;
-        bottom: 0px;
-        left: 0px;
-        width: var(--container-width);
-        padding: 8px;
-
-
-        .home{
-          width: 100%;
-          height: 40px;
-          padding: 5px;
-          margin-bottom: 5px;
-          background: transparent;
-          border: none;
-          outline: none;
-  
-          svg{
-            height: 100%;
-            width: 100%;
-            cursor: pointer;
-
-            // @keyframe home-anima{
-            //   from{
-            //     transform: scale(1);
-            //   }
-            //   to{
-            //     transform: scale(0.8);
-            //   }
-            // }
-
-            // &:hover{
-            //   animation: home-anima 0.5s linear infinite;
-            // }
-          }
-        }
-
-        .log-out{
-          height: 40px;
-          width: 100%;
-          background: #fbd547;
-          border-radius: 5px;
-          padding: 5px;
-          overflow: hidden;
-          cursor: pointer;
-
-
-          svg{
-            fill: black;
-            height: 100%;
-            width: 100%;
-            transform: rotate(-180deg);
-            transition: 0.15s ease;
-          }
-
-          &:hover svg{
-            transform: rotate(360deg);
-          }
-        }
-
+    &>nav{
+      height: 100%;
+      @media (max-width: 950px){
+        display: none;
       }
     }
 
     .chat-container {
       flex-basis: 400px;
       width: 400px;
-      height: 100vh;
+      min-width: 350px;
+      height: 100%;
       overflow-y: auto;
       overflow-x: hidden;
+
+      @media (max-width: 950px){
+        width: 100%;
+        grid-area: 1/1/2/2;
+      }
     }
 
     .current-chat-container {
       width: calc(100% - 80px - 400px);
-      height: 100vh;
+      min-width: 350px;
+      height: 100%;
+
+      @media (max-width: 950px){
+        width: 100%;
+        grid-area: 1/2/2/3;
+      }
     }
   }
 `;

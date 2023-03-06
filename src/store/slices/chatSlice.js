@@ -104,6 +104,11 @@ const chatSlice = createSlice({
 
       AllShiftedChat.splice(0, 0, chatToMove);
       state.allChats = AllShiftedChat;
+    },
+    closeChat: (state, { payload }) => {
+      state.currentChat.Id = "";
+      state.currentChat.messages = [];
+      state.currentChat.otherMember = {};
     }
   },
   extraReducers: (builder) => {
@@ -117,5 +122,5 @@ const chatSlice = createSlice({
 });
 
 
-export const { setChatId, setCurrentReceiver, addChatMessage, setAllChats, moveChatToTop} = chatSlice.actions;
+export const { setChatId, setCurrentReceiver, addChatMessage, setAllChats, moveChatToTop, closeChat} = chatSlice.actions;
 export default chatSlice.reducer;
