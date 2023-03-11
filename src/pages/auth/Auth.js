@@ -23,22 +23,22 @@ const Auth = () => {
                     <h2>
                         REGISTER AND START CHATING ON <span> TRENDEST CHAT APP</span>{" "}
                     </h2>
-                    <img src={authImg} alt="" />
+                    {/* <img src={authImg} alt="" /> */}
                 </div>
                 <div className="right">
-                    <img src={authImg} alt="" />
+                    {/* <img src={authImg} alt="" /> */}
                     <div className="form-container">
                         {state ? <LogIn /> : <Register />}
                         <div>
                             {state ? (
                                 <article>
                                     <p>
-                                        not a member <span onClick={stateHandler}> register</span>
+                                        Not a member <span onClick={stateHandler}> register</span>
                                     </p>{" "}
                                 </article>
                             ) : (
                                 <article>
-                                    already a member <span onClick={stateHandler}> log in</span>
+                                    Already a member <span onClick={stateHandler}> log in</span>
                                 </article>
                             )}
                         </div>

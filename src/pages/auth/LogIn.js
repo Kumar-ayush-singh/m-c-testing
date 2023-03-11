@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../store/slices/userPageSlice";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const LogIn = () => {
 
@@ -34,12 +34,15 @@ const LogIn = () => {
         dispatch(loginUser({...values}));
     };
 
-    useEffect(() => {
-        isLogedIn && navigate("/chat-page");
-    }, [isLogedIn]);
+    // useEffect(() => {
+    //     isLogedIn && navigate("/chat-page");
+    // }, [isLogedIn]);
 
     return (
         <Wrapper>
+            {
+                isLogedIn && <Navigate to={"/chat-page"} replace/> 
+            }
             <h1>Log in</h1>
             <form onSubmit={handleSubmit}>
                 {/* <div className="form-row">

@@ -7,7 +7,7 @@ border: none;
 border-radius: 5px;
 overflow: hidden;
 height: 40px;
-// width: 100px;
+min-width: 120px;
 font-weight: bold;
 position: relative;
 background: transparent;

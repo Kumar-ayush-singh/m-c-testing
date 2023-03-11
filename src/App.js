@@ -7,6 +7,8 @@ import "./fonts/Montserrat/Montserrat.font.css"
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import Loading from "./components/helper/loading";
+import WithAuth from "./util/authHOC";
+import { useSelector } from "react-redux";
 
 //lazy loadded modules
 const Auth = lazy( () => import("./pages/auth/Auth") );
@@ -17,13 +19,18 @@ const ChatPage = lazy( () => import("./pages/chatPage/ChatPage") );
 
 
 const App = () => {
+  const { isLogedIn } = useSelector(state => state.user);
   return (
     <>
     <Suspense fallback={<Loading/>}>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path="/chat-page" element={<ChatPage />} />
+        <Route path="/chat-page" element={
+          <WithAuth isLogedIn={isLogedIn}>
+            <ChatPage />
+          </WithAuth>
+        } />
       </Routes>
       <Footer />
       <ToastContainer/>

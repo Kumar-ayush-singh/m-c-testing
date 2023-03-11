@@ -10,8 +10,8 @@ const Landing = () => {
       <Navbar/>
       <div>
         <Section1 class="section"/>
-        <VideoSection class="section"/>
-        <Footer />
+        {/* <VideoSection class="section"/> */}
+        {/* <Footer /> */}
       </div>
     </>
   );

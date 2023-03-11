@@ -6,25 +6,3 @@
 .section p{
     font-size: 16px;
 }
-
-.section_1 .section_container{
-    padding-top: 170px;
-}
-
-.section_container{
-    display: flex;
-    justify-content: center;
-    padding: 50px;
-}
-
-.section_container>div{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-basis: 1200px;
-    /* overflow-x: hidden; */
-}
-.section_container>div>div{
-    flex-grow: 0;
-    /* overflow-x: hidden; */
-}

@@ -1,98 +1,176 @@
 import styled from "styled-components";
-import mobileImg from "../assets/home_appscreen_en-1.webp";
+import { IoIosArrowRoundForward } from "react-icons/io";
+import chatBegin from "../assets/chat-begin.svg";
 
 
-const LeftBackgroundBlock = styled.div`
-height: 916px;
-width: 996px;
-transform: rotate(26deg) translate(-290px, 45px);
-border-radius: 90px;
-background: linear-gradient(208.89deg,var(--thm-primary-color) 1.69%,var(--thm-secondary-color) 63.59%);
-z-index: -10;
-position: absolute;
-left: 0px;
-top: 0px;
-`;
-const RightBackgroundBlock = styled.div`
-position: absolute;
-background-color: var(--thm-transparent-color);
-height:737px;
-width: 737px;
-top: 50px;
-right: -33%;
-transform: rotate(26deg);
-border-radius: 100px;
+const ImageContainer = styled.div`
+height: 100%;
+flex-shrink: 1;
 
-&::after{
-  content: "";
-  background-color: inherit;
-  position: absolute;
-  height: 100%;
+@media (max-width: 1300px){
   width: 100%;
-  top: 0;
-  left: 0;
-  border-radius: 100px;
-  transform: rotate(-46deg);
-}`;
-const InnerContainer = styled.div`
-gap: 80px;
+  height: 600px;
 
-div{
-  &:last-child{
-    width: 60%;
+  @media(min-height: 600px){
+    height: 800px;
   }
-  width: 50%;
-}
-
-h1{
-  font-size: 60px;
-  font-weight: bolder;
-  margin-bottom: 30px;
-}
-h3{
-  font-size: 28px;
-  font-weight: lighter;
-  margin-bottom: 35px;
 }
 
 img{
-  width: 600px;
-  transform: translateY(-85px);
-}
-`;
+  max-height: 800px;
+  height: 600px;
+  z-index: -10;
 
-const ImageContainer = styled.div`
+  @media (min-height: 600px){
+    height: 800px;
+  }
+  @media (max-width: 1300px){
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
 `;
 
 const Section1 = (props) => {
   return (
-    <section className={"section_1 " + props.class}>
-      <LeftBackgroundBlock/>
-      <RightBackgroundBlock/>
+    <Wrapper className={"section_1 " + props.class}>
       <div className="section_container">
-        <InnerContainer className="flex">
-          <div>
-            <h1>
-              THE SOCIAL NETWORK OF SPORTS BETTING
-            </h1>
-            <h3>
-              BE A PART OF A COMMUNITY THAT LOVES SPORTS AS MUCH AS YOU.
-            </h3>
-            <p>
-              Wanna isn't your average sports betting platform. We take the entertainment of sports betting to another level with a community full of passionate and competitive fans. We love the emotions of each game, the excitement, the joy, the heartbreak, the victory cry, and of course, the pleasure of letting your rival fans know how much better your team is.
-            </p>
-            <br/>
-            <p>
-              We want you to feel like you took part in the game that you are watching. You should feel sore the next day from jumping, cheering and high-fiving. This, we’ve decided, this is what sports betting should be, what it can do. Like books, sports give people a sense of having lived other lives, of taking part in other people's victories. And defeats. When sports are at their best, the spirit of the fan merges with the spirit of the athlete, this is the oneness that the mystics talk about.
-            </p>
-          </div>
-          <ImageContainer>
-            <img src={mobileImg} alt="Phone"/>
-          </ImageContainer>
-        </InnerContainer>
+        <div>
+          <h1>
+            cHAT WITH EVERYONE{/* WITH ENCRIPTED MESSAGE */}
+          </h1>
+          <h3>
+            BE CONNECTED TO EVERYONE AT ANY TIME WITH ANY DEVICE.
+          </h3>
+          <p>
+            Wanna is a real time chat app that is develop to chat without downloading any app or software, it work in all deveices which have internet connection and a sofware in which you are accessing this site.
+          </p>
+          <br/>
+          <GetStarted>
+            Get Started
+            <span className="arrow-container">
+              <IoIosArrowRoundForward className="upperlayer"/>
+            </span>
+          </GetStarted>
+        </div>
+        <ImageContainer>
+          <img src={chatBegin} alt="chat-art"/>
+        </ImageContainer>
       </div>
-    </section>
+    </Wrapper>
   );
 };
+
+
+const Wrapper = styled.section`
+width: 100vw;
+padding: 0px 100px;
+display: grid;
+justify-content: center;
+
+
+@media (max-width: 1300px){
+  background: linear-gradient(90deg, var(--thm-background-color) 30%, transparent);
+  padding: 0px 50px;
+}
+
+
+
+.section_container{
+  width: 100%;
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 1300px){
+    gap: 0px;
+  }
+
+
+  h1{
+    margin-bottom: 30px;
+  }
+  h3{
+    margin-bottom: 30px;
+    font-weight: lighter;
+  }
+
+  &>div:first-child{
+    flex-shrink: 1;
+    flex-basis: 470px;
+    z-index: 5;
+
+    @media (max-width: 1300px){
+      // flex-basis: 60%;
+      flex-shrink: 0;
+      padding-top: 100px;
+    }
+
+    @media (max-width: 800px){
+      flex-basis: 100%;
+      align-self: flex-start;
+    }
+  }
+}
+`;
+
+const GetStarted = styled.button`
+--height: 40px;
+--btn-color: #f6d83d;
+
+padding: 0px 20px;
+background: var(--btn-color);
+border-radius: 500px;
+display: flex;
+justify-contetn: space-between;
+align-items: center;
+font-size: 1rem;
+font-weight: 600;
+border: none;
+outline: none;
+gap: 20px;
+height: var(--height);
+overflow: hidden;
+cursor: pointer;
+
+svg{
+  height: var(--height);
+  width: var(--height);
+}
+
+&>.arrow-container{
+  position: relative;
+  width: var(--height);
+  height: var(--height);
+
+  &>.upperlayer{
+    background: var(--btn-color);
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}
+
+
+&:hover{
+  .arrow-container .upperlayer{
+    animation: movearrow .5s ease infinite alternate;
+  }
+}
+
+@keyframes movearrow{
+  0%{
+    left: 0;
+  }
+  100%{
+    left: 10px;
+  }
+}
+
+`;
+
+
 
 export default Section1;
