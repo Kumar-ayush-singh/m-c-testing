@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../../store/slices/userPageSlice";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import SlidingButton from "../../components/functional/Button";
 // import { ToastContainer, toast} from "react-toastify";
 // import 'react-toastify/dist/ReactToastify.css';
 
@@ -34,13 +35,11 @@ const Register = () => {
         dispatch(registerUser({...values, email: values.email}))
     };
 
-    useEffect(() => {
-        isLogedIn && navigate("/chat-page");
-    }, [isLogedIn]);
-
     return (
         <Wrapper>
-            <h1>register</h1>
+            {
+                isLogedIn && <Navigate to={"/chat-page"} replace/> 
+            }
             <form onSubmit={handleSubmit}>
                 <div className="form-row">
                     <label htmlFor="">Name</label>
@@ -50,6 +49,7 @@ const Register = () => {
                         name="name"
                         value={values.name}
                         onChange={handleChange}
+                        placeholder="Type Name"
                     />
                 </div>
                 <div className="form-row">
@@ -60,6 +60,7 @@ const Register = () => {
                         name="email"
                         value={values.email}
                         onChange={handleChange}
+                        placeholder="Type Email"
                     />
                 </div>
                 <div className="form-row">
@@ -70,22 +71,38 @@ const Register = () => {
                         name="password"
                         value={values.password}
                         onChange={handleChange}
+                        placeholder="Type Password"
                     />
                 </div>
-                <button>submit</button>
+                <SlidingButton btn_name="Continue" className="submit"/>
             </form>
         </Wrapper>
     );
 };
 const Wrapper = styled.section`
-  button {
-    background-color: #f5cc45;
-    color: #000016;
-    padding: 0.2rem 1rem;
-    font-size: 1rem;
-    border-radius: 10px 10px;
-    border: none;
-    font-weight: bold;
+.form-row{
+    label{
+        display: block;
+        padding-bottom: 5px;
+    }
+    input{
+        border: none;
+        outline: none;
+        border-radius: 5px;
+        background: var(--thm-transparent2-color);
+        color: white;
+        font-size: 15px;
+
+        &::placeholder{
+            color: var(--thm-transparent2-color);
+            font-style: italic;
+        }
+    }
+}
+  .submit {
+    width: 100%;
+    font-size: 15px;
+    margin-top: 30px;
   }
 `;
 export default Register;

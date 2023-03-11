@@ -1,139 +1,123 @@
 import React, { useState } from "react";
+import { BiUser } from "react-icons/bi";
+import { BiUserCircle } from "react-icons/io";
 import styled from "styled-components";
 import Navbar from "../../components/helper/Navbar";
-import authImg from "./assets/auth-img-2.png";
-// import Footer from "../../components/helper/Footer";
 import LogIn from "./LogIn";
 import Register from "./Register";
 
 
 const Auth = () => {
 
-    const [state, setState] = useState(false);
-    const stateHandler = () => {
-        setState(!state);
-    };
+  const [state, setState] = useState(false);
+  const stateHandler = () => {
+    setState(!state);
+  };
 
-    return (
-      <>
-        <Navbar />
-        <Wrapper>
-            <div className="container">
-                <div className="left">
-                    <h2>
-                        REGISTER AND START CHATING ON <span> TRENDEST CHAT APP</span>{" "}
-                    </h2>
-                    {/* <img src={authImg} alt="" /> */}
-                </div>
-                <div className="right">
-                    {/* <img src={authImg} alt="" /> */}
-                    <div className="form-container">
-                        {state ? <LogIn /> : <Register />}
-                        <div>
-                            {state ? (
-                                <article>
-                                    <p>
-                                        Not a member <span onClick={stateHandler}> register</span>
-                                    </p>{" "}
-                                </article>
-                            ) : (
-                                <article>
-                                    Already a member <span onClick={stateHandler}> log in</span>
-                                </article>
-                            )}
-                        </div>
-                    </div>
-                </div>
+  return (
+    <>
+      <Navbar />
+      <Wrapper>
+        <div className="container">
+          <div className="head">
+            <BiUser/>
+            { state ? "Member LogIn" : "Member Register" }
+            <div className="background"></div>
+          </div>
+          <div className="form-container">
+            {state ? <LogIn /> : <Register />}
+            <div>
+              {state ? (
+                <article>
+                  <p>
+                    Not a member? <span onClick={stateHandler}> Register</span>
+                  </p>
+                </article>
+              ) : (
+                <article>
+                  Already a member? <span onClick={stateHandler}> Log in</span>
+                </article>
+              )}
             </div>
-        </Wrapper>
-      </>
-    );
+          </div>
+        </div>
+      </Wrapper>
+    </>
+  );
 };
 const Wrapper = styled.section`
-  background-color: #111827;
-  min-height: 90vh;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* padding: 1rem 2rem; */
-  .container {
-    /* background-color: #402696; */
-    min-height: 80vh;
-    overflow: hidden;
-    width: 80%;
-    border-radius: 30px;
-    background: rgb(135, 26, 227);
-    background: linear-gradient(
-      90deg,
-      rgba(135, 26, 227, 1) 0%,
-      rgba(62, 39, 148, 1) 100%,
-      rgba(0, 212, 255, 1) 100%
-    );
-    display: flex;
-    .right {
-      display: flex;
-      width: 50%;
-      img {
-        display: none;
-      }
-      .form-container {
-        width: 80%;
-        /* background-color:
-        m= */
-        margin: auto;
-        border-radius: 20px;
-        background-color: #f7f7ff;
-        border-radius: 20px;
-        padding: 1rem;
-        form {
-          padding: 1rem;
-          border-radius: 20px;
-        }
-        span {
-          color: #f5cc45;
-          cursor: pointer;
-        }
-      }
-    }
-    .left {
-      position: relative;
-      width: 50%;
+--container-padding: 20px;
+width: 100%;
+display: flex;
+justify-content: center;
+padding: 50px 0px;
+color: white;
+font-size: 16px;
+font-weight: 500;
 
-      h2 {
-        color: white;
-        padding: 1rem;
-        margin-right: 5vw;
-        font-size: 3rem;
-      }
-      img {
-        position: absolute;
-        bottom: 0;
-      }
+
+.container{
+  background: var(--thm-transparent-color);
+  max-width: 600px;
+  min-width: 350px;
+  border-radius: 15px;
+  overflow: hidden;
+  
+  .head{
+    padding: var(--container-padding);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    position: relative;
+    font-size: 20px;
+    font-weight: 700;
+  
+    svg{
+      width: 100px;
+      height: 100px;
     }
-    /* margin: 1rem auto; */
+
+    .background{
+      position: absolute;
+      top: -90%;
+      left: -25px;
+      background: var(--thm-gradient);
+      width: calc(100% + 50px);
+      height: 200%;
+      border-radius: 50%;
+      z-index: -1;
+    }
   }
-  @media (max-width: 600px) {
-    .container {
-      .left {
-        display: none;
+
+
+  .form-container{
+    margin-top: 30px;
+    padding: var(--container-padding);
+
+    article{
+      font-style: italic;
+      font-weight: lighter;
+      font-size: 0.9em;
+      margin-top: 10px;
+      
+      p{
+        margin: 0;
       }
-      .right {
-        width: 100%;
-        padding: 0;
-        position: relative;
-        flex-direction: column;
-        img {
-          position: absolute;
-          height: 5rem;
-          width: 7rem;
-          display: flex;
-          top: 1%;
-          margin: 0 auto;
-          position: relative;
+      
+      span{
+        color: var(--btn-color);
+        cursor: pointer;
+        font-style: normal;
+        margin-left: 10px;
+        text-decoration: underline;
+
+        &:hover{
+          font-weight: 500;
         }
       }
-    }
+    } 
   }
+}
 `;
 export default Auth;

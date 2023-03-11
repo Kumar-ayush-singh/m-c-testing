@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../store/slices/userPageSlice";
 import { Navigate, useNavigate } from "react-router-dom";
+import SlidingButton from "../../components/functional/Button";
 
 const LogIn = () => {
 
@@ -43,12 +44,7 @@ const LogIn = () => {
             {
                 isLogedIn && <Navigate to={"/chat-page"} replace/> 
             }
-            <h1>Log in</h1>
             <form onSubmit={handleSubmit}>
-                {/* <div className="form-row">
-                    <label htmlFor="">Name</label>
-                    <input type="text" className="form-input" />
-                </div> */}
                 <div className="form-row">
                     <label htmlFor="">Email</label>
                     <input
@@ -57,6 +53,7 @@ const LogIn = () => {
                         value={values.email}
                         onChange={handleChange}
                         name="email"
+                        placeholder="Type Email"
                     />
                 </div>
                 <div className="form-row">
@@ -67,22 +64,38 @@ const LogIn = () => {
                         name="password"
                         value={values.password}
                         onChange={handleChange}
+                        placeholder="Type Password"
                     />
                 </div>
-                <button>submit</button>
+                <SlidingButton btn_name="Continue" className="submit"/>
             </form>
         </Wrapper>
     );
 };
 const Wrapper = styled.section`
-  button {
-    background-color: #f5cc45;
-    color: #000016;
-    padding: 0.2rem 1rem;
-    font-size: 1rem;
-    border-radius: 10px 10px;
-    border: none;
-    font-weight: bold;
+.form-row{
+    label{
+        display: block;
+        padding-bottom: 5px;
+    }
+    input{
+        border: none;
+        outline: none;
+        border-radius: 5px;
+        background: var(--thm-transparent2-color);
+        color: white;
+        font-size: 15px;
+
+        &::placeholder{
+            color: var(--thm-transparent2-color);
+            font-style: italic;
+        }
+    }
+}
+  .submit {
+    width: 100%;
+    font-size: 15px;
+    margin-top: 30px;
   }
 `;
 export default LogIn;

@@ -118,7 +118,7 @@ justify-content: center;
 
 const GetStarted = styled.button`
 --height: 40px;
---btn-color: #f6d83d;
+--btn-color: #fbd547;
 
 padding: 0px 20px;
 background: var(--btn-color);
