@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import UserCard from "./cards/UserCard";
+import { useSelector } from "react-redux";
 
 
 const SearchUsers = () => {
+  const { user } = useSelector(state => state.user)
   const [users, setUsers] = useState([]);
   const getAllUser = async () => {
     const { data } = await axios.get("http://localhost:3000/api/user/get-all/");
@@ -21,7 +23,7 @@ const SearchUsers = () => {
   return (
     <Wrapper>
       {users.map(({name, _id}, i) => {
-        return <UserCard key={i} name={name} Id={_id} />;
+          return _id === user.userId ? null : <UserCard key={i} name={name} Id={_id} />
       })}
     </Wrapper>
   );
