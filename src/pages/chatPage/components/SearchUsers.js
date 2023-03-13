@@ -2,14 +2,28 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import UserCard from "./cards/UserCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getToken } from "../../../util/localStorage";
+import { logOutUser } from "../../../store/slices/userPageSlice";
 
 
 const SearchUsers = () => {
   const { user } = useSelector(state => state.user)
   const [users, setUsers] = useState([]);
+  const dispatch = useDispatch();
+
   const getAllUser = async () => {
-    const { data } = await axios.get("http://localhost:3000/api/user/get-all/");
+    const token = getToken();
+      if(!token){
+        dispatch(logOutUser());
+        return;
+      }
+    const { data } = await axios.get("http://localhost:3000/api/user/get-all/",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     setUsers(data);
     console.log(users);
   };

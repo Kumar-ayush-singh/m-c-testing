@@ -9,7 +9,7 @@ import Register from "./Register";
 
 const Auth = () => {
 
-  const [state, setState] = useState(false);
+  const [state, setState] = useState(true);
   const stateHandler = () => {
     setState(!state);
   };

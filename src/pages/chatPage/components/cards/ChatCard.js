@@ -25,7 +25,7 @@ const ChatCard = (props) => {
       name: props.chat.otherMember.name,
       Id: props.chat.otherMember._id,
     }));
-    dispatch(startConversation({"chatId": props.chat._id, "userId": user.userId}));
+    dispatch(startConversation({"chatId": props.chat._id, "userId": user.userId }));
     dispatch(setMobileViewSection("currentChatContainer"));
     
     if(chatNotifications[props.chat._id] && chatNotifications[props.chat._id].newMsgCount){

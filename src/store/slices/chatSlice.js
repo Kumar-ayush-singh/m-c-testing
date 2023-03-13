@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { getToken } from "../../util/localStorage";
+import { logOutUser } from "./userPageSlice";
 
 const initialState = {
   allChats: [], //[{_id, members[], newMessage, status}]
@@ -55,8 +57,18 @@ export const startConversation = createAsyncThunk(
     console.log(payload);
 
     try{
+      const token = getToken();
+      if(!token){
+        thunkApi.dispatch(logOutUser());
+        return thunkApi.rejectWithValue("401");
+      }
       const res = await axios.get(
-        `http://localhost:3000/api/message/${payload.chatId}`
+        `http://localhost:3000/api/message/${payload.chatId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
 
       console.log("got all message");

@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import ChatCard from "./cards/ChatCard";
 import { setAllChats } from "../../../store/slices/chatSlice";
 import { setChatSection } from "../../../store/slices/chatNavSlice";
+import { getToken } from "../../../util/localStorage";
+import { logOutUser } from "../../../store/slices/userPageSlice";
 
 
 const RecentChats = () => {
@@ -15,8 +17,18 @@ const RecentChats = () => {
 
     const getChats = async () => {
         try {
+            const token = getToken();
+            if(!token){
+                dispatch(logOutUser);
+                return;
+            }
             const { data } = await axios.get(
-                `http://localhost:3000/api/chat/${user.userId}`
+                `http://localhost:3000/api/chat/${user.userId}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+                }
             );
 
             dispatch(setAllChats(data));

@@ -11,4 +11,9 @@ export const addUserToLocalStorage = (user) => {
     const user = result ? JSON.parse(result) : {};
     return user;
   };
+
+  export const getToken = () => {
+    const result = localStorage.getItem("user");
+    return result ? JSON.parse(result).token : false;
+  }
   

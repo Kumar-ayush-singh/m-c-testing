@@ -6,5 +6,5 @@ export default function WithAuth({isLogedIn, children}){
     if(isLogedIn){
         return children;
     }
-    return <Navigate to="/auth"/>
+    return <Navigate replace to="/auth"/>
 }
