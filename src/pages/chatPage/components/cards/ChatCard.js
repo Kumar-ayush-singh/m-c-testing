@@ -38,6 +38,7 @@ const ChatCard = (props) => {
 
 
   useEffect(() => {
+    console.warn(props);
     if(props.chat.lastMessage){
       dispatch(setChatNotification({
         chatId: props.chat._id,
@@ -47,9 +48,9 @@ const ChatCard = (props) => {
         dataFromDB: true,
       }));
     }
-    console.warn(`running use effect of chat card`);
-  }, [props.chat.lastMessage]);
+  }, [props.chat]);
 
+  console.warn(props);
   const isChatOpen = props.chat._id === currentChat.Id;
 
   return (

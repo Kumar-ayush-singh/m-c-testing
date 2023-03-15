@@ -5,6 +5,9 @@ import { useSelector, useDispatch } from "react-redux";
 import StyledCard from "../../../../components/functional/styledCard";
 import { startConversation, setCurrentReceiver } from "../../../../store/slices/chatSlice";
 import { setChatSection, setMobileViewSection } from "../../../../store/slices/chatNavSlice";
+import { HOST_URL, PORT } from "../../../../util/hostDetails";
+import { getToken } from "../../../../util/localStorage";
+import { logOutUser } from "../../../../store/slices/userPageSlice";
 
 
 const UserCard = ({ name, Id }) => {
@@ -18,10 +21,19 @@ const UserCard = ({ name, Id }) => {
   
   const createChat = async () => {
     try {
+      const token = getToken();
+      if(!token){
+        dispatch(logOutUser());
+      }
       console.log(user)
-      const { data } = await axios.post("http://localhost:3000/api/chat", {
+      const { data } = await axios.post(`${HOST_URL}:${PORT}/api/chat`, {
         senderId: user.userId,
         receiverId: Id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       
       dispatch(startConversation({chatId: data._id, userId: user.userId}));

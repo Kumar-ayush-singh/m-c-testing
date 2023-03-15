@@ -1,4 +1,4 @@
-import React, {lazy, Suspense} from "react";
+import React, {lazy, Suspense, useEffect} from "react";
 import { Route, Routes } from "react-router-dom";
 import Footer from "./components/helper/Footer";
 import Landing from "./pages/landing/Landing";
@@ -16,10 +16,27 @@ const ChatPage = lazy( () => import("./pages/chatPage/ChatPage") );
 // import Auth from "./pages/auth/Auth";
 // import ChatPage from "./pages/chatPage/ChatPage";
 
+function handleResize(){
+  let vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--inner-height', `${vh}px`)
+}
+
 
 
 const App = () => {
   const { isLogedIn } = useSelector(state => state.user);
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
+    return(
+      () => {
+        window.removeEventListener("resize", handleResize);
+      }
+    )
+  }, []);
+
+
   return (
     <>
     <Suspense fallback={<Loading/>}>

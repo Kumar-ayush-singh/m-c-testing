@@ -78,6 +78,7 @@ const Wrapper = styled.section`
 
   width: 100vw;
   height: 100vh;
+  height: var(--calculated-vh, 100vh);
   overflow: hidden;
   position: relative;
 

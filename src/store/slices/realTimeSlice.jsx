@@ -34,6 +34,11 @@ const realTimeSlice = createSlice({
             }
             else if(state.chatNotifications[payload.chatId]){
                 const numb = JSON.stringify(state.chatNotifications[payload.chatId].newMsgCount);
+
+                //removing unread tag when message already open
+                if(!Number(numb)){
+                    state.chatNotifications[payload.chatId].lastViewedMessage = state.chatNotifications[payload.chatId].lastMessage;
+                }
                 state.chatNotifications[payload.chatId].newMsgCount = Number(numb) + 1;
                 state.chatNotifications[payload.chatId].lastMessage = payload;
             }

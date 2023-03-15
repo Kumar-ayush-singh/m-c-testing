@@ -28,8 +28,7 @@ const CurrentChat = () => {
   const [isMessagesScrolled, setIsMessagesScrolled] = useState(true);
 
   const handlMsgeSubmit = async () => {
-    //remove unred msg tag
-    dispatch(updateViewedMessage(chatId));
+
     try {
       // const { data } = await axios.post("http://localhost:3000/api/message/", {
       //   chatId: chatId,
@@ -54,11 +53,16 @@ const CurrentChat = () => {
           userId: user.userId
         }));
         dispatch(updateLastMessage({ ...res.data }));
+
+        //remove unred msg tag
+        dispatch(updateViewedMessage(chatId));
         dispatch(moveChatToTop({chatId: chatId}));
       })
       setMsg("");
     } catch (error) {
       console.log(error);
+      //remove unred msg tag
+      dispatch(updateViewedMessage(chatId));
     }
   };
 
@@ -83,7 +87,7 @@ const CurrentChat = () => {
         dispatch(setChatNotification({...message}));
       }
 
-      //sending this chat at top of chat stack
+      //sending this chat card at top of chat card stack
       dispatch(moveChatToTop({chatId: message.chatId}));
     });
 
@@ -113,6 +117,7 @@ const CurrentChat = () => {
               <div className="userInfo-container">
                 <div className="back-container" onClick={()=>{
                   dispatch(setMobileViewSection("chatBody"));
+                  dispatch(closeChat());
                 }}>
                   <IoIosArrowRoundBack/>
                   <div className="img-container">
@@ -154,18 +159,14 @@ const CurrentChat = () => {
                 onScroll={(e) => handelScroll(e)}
               >
                 {messages.length > 0 ? (
-                  chatNotifications[chatId] && chatNotifications[chatId].lastViewedMessage &&
-                  chatNotifications[chatId].lastViewedMessage._id === chatNotifications[chatId].lastMessage._id ||
-                  chatNotifications[chatId].lastMessage.senderId === user.userId ?
-                  messages.map((message, i) => {
-                    return (<Message key={i} message={message} />);
-                  })
-                  :
+                  (chatNotifications[chatId] && chatNotifications[chatId].lastViewedMessage) &&
+                  !(chatNotifications[chatId].lastViewedMessage._id === chatNotifications[chatId].lastMessage._id ||
+                  chatNotifications[chatId].lastMessage.senderId === user.userId) ?
+                  
                   messages.map((message, i) => {
                     return (
                       <>
                       {
-                        !chatNotifications[chatId].lastViewedMessage ||
                         chatNotifications[chatId].lastViewedMessage._id === message._id ?
                         <>
                           <Message key={i} message={message} />
@@ -176,6 +177,10 @@ const CurrentChat = () => {
                       }
                       </>
                     )
+                  })
+                  :
+                  messages.map((message, i) => {
+                    return (<Message key={i} message={message} />);
                   })
                 ) : (
                   <h2 className="msg-404">

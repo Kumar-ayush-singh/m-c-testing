@@ -5,6 +5,7 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { HOST_URL, PORT } from "../../util/hostDetails";
 import {
     addUserToLocalStorage,
     getUserFromLocalStorage,
@@ -27,7 +28,7 @@ export const registerUser = createAsyncThunk(
     async (user, thunkAPI) => {
         try {
             const resp = await axios.post(
-                "http://localhost:3000/api/auth/sign-up",
+                `${HOST_URL}:${PORT}/api/auth/sign-up`,
                 user
             );
             return resp.data;
@@ -46,7 +47,7 @@ export const loginUser = createAsyncThunk(
         try {
             console.log("running");
             const resp = await axios.post(
-                "http://localhost:3000/api/auth/sign-in",
+                `${HOST_URL}:${PORT}/api/auth/sign-in`,
                 user
             );
             return resp.data;

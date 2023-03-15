@@ -56,7 +56,8 @@ body {
   --thm-own-message-background: var(--thm-gradient);
   --thm-other-message-background: var(--thm-transparent-color);
 
-
+  /* height of screnn on mobile */
+  --calculated-vh: calc(var(--inner-height, 1vh) * 100);
 }
 h1,
 h2,

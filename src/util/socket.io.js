@@ -1,7 +1,8 @@
 import { io } from "socket.io-client";
+import { HOST_URL, PORT } from "./hostDetails";
 
 const RECONNECTION_LIMIT = 10000;
-const socket = io('http://localhost:3000'); //add option in second parameter an object
+const socket = io(`${HOST_URL}:${PORT}`); //add option in second parameter an object
 
 export default socket;
 

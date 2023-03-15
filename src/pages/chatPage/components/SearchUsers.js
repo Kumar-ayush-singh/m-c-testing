@@ -5,6 +5,7 @@ import UserCard from "./cards/UserCard";
 import { useDispatch, useSelector } from "react-redux";
 import { getToken } from "../../../util/localStorage";
 import { logOutUser } from "../../../store/slices/userPageSlice";
+import { HOST_URL, PORT } from "../../../util/hostDetails";
 
 
 const SearchUsers = () => {
@@ -18,7 +19,7 @@ const SearchUsers = () => {
         dispatch(logOutUser());
         return;
       }
-    const { data } = await axios.get("http://localhost:3000/api/user/get-all/",
+    const { data } = await axios.get(`${HOST_URL}:${PORT}/api/user/get-all/`,
     {
       headers: {
         Authorization: `Bearer ${token}`

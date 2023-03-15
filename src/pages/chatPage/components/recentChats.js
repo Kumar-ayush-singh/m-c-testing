@@ -7,12 +7,13 @@ import { setAllChats } from "../../../store/slices/chatSlice";
 import { setChatSection } from "../../../store/slices/chatNavSlice";
 import { getToken } from "../../../util/localStorage";
 import { logOutUser } from "../../../store/slices/userPageSlice";
+import { HOST_URL, PORT } from "../../../util/hostDetails";
 
 
 const RecentChats = () => {
     const dispatch = useDispatch();
     const { user } = useSelector((store) => store.user);
-    const { allChats } = useSelector( store => store.chat );
+    const { allChats, newChat } = useSelector( store => store.chat );
 
 
     const getChats = async () => {
@@ -23,7 +24,7 @@ const RecentChats = () => {
                 return;
             }
             const { data } = await axios.get(
-                `http://localhost:3000/api/chat/${user.userId}`,
+                `${HOST_URL}:${PORT}/api/chat/${user.userId}`,
                 {
                   headers: {
                     Authorization: `Bearer ${token}`
@@ -45,12 +46,11 @@ const RecentChats = () => {
 
     useEffect(() => {
         getChats();
-    }, []);
+    }, [newChat]);
 
     const startNewHandler = () => {
         dispatch(setChatSection("searchUsers"));
     }
-
 
 
     return (

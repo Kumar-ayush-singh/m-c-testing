@@ -67,6 +67,7 @@ div:last-child{
       flex-direction: column;
       backdrop-filter: blur(15px);
       height: 100vh;
+      height: var(--calculated-vh);
       width: 100%;
       align-items: center;
     }

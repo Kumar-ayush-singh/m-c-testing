@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { HOST_URL, PORT } from "../../util/hostDetails";
 import { getToken } from "../../util/localStorage";
 import { logOutUser } from "./userPageSlice";
 
 const initialState = {
   allChats: [], //[{_id, members[], newMessage, status}]
+  newChat: null,
   currentChat: {
     Id: "",
     messages: [],
@@ -63,7 +65,7 @@ export const startConversation = createAsyncThunk(
         return thunkApi.rejectWithValue("401");
       }
       const res = await axios.get(
-        `http://localhost:3000/api/message/${payload.chatId}`,
+        `${HOST_URL}:${PORT}/api/message/${payload.chatId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -103,6 +105,9 @@ const chatSlice = createSlice({
     setAllChats: (state, { payload }) => {
       state.allChats = payload;
     },
+    // addNewChat: ( state, { payload }) => {
+    //   if()
+    // },
     moveChatToTop: (state, { payload }) => {
       let chatToMove;
       const AllShiftedChat = state.allChats.filter((chat) => {
@@ -113,6 +118,12 @@ const chatSlice = createSlice({
           chatToMove = {...chat};
         }
       });
+
+      if(!chatToMove){
+        //only used to refresh recent chat when message come from new chat
+        state.newChat = payload.chatId;
+        return;
+      }
 
       AllShiftedChat.splice(0, 0, chatToMove);
       state.allChats = AllShiftedChat;
