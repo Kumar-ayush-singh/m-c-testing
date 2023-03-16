@@ -38,7 +38,7 @@ const Register = () => {
     return (
         <Wrapper>
             {
-                isLogedIn && <Navigate to={"/chat-page"} replace/> 
+                isLogedIn && <Navigate to={"/select-avatar"} replace/> 
             }
             <form onSubmit={handleSubmit}>
                 <div className="form-row">

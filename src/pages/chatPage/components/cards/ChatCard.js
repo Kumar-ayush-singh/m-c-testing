@@ -7,6 +7,7 @@ import StyledCard from "../../../../components/functional/styledCard";
 import { removeChatNotification, setChatNotification, updateViewedMessage } from "../../../../store/slices/realTimeSlice";
 import socket from "../../../../util/socket.io";
 import { setMobileViewSection } from "../../../../store/slices/chatNavSlice";
+import getAvatarSvg from "../../../../util/allAvatar";
 
 
 
@@ -24,6 +25,7 @@ const ChatCard = (props) => {
     dispatch(setCurrentReceiver({
       name: props.chat.otherMember.name,
       Id: props.chat.otherMember._id,
+      avatar: props.chat.otherMember.avatar,
     }));
     dispatch(startConversation({"chatId": props.chat._id, "userId": user.userId }));
     dispatch(setMobileViewSection("currentChatContainer"));
@@ -57,7 +59,7 @@ const ChatCard = (props) => {
     <StyledCard>
       <div className={(isChatOpen ? "active" : "") + " card"} onClick={setChatIdInStore}>
         <div className="img-notification-container">
-          <img src={dummuPic} alt="" />
+          <img src={getAvatarSvg(props.chat.otherMember.avatar)} alt="" />
           {
             chatNotifications[props.chat._id] &&
             chatNotifications[props.chat._id].newMsgCount >= 1 ?

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import chatBegin from "../assets/chat-begin.svg";
+import { useNavigate } from "react-router-dom";
 
 
 const ImageContainer = styled.div`
@@ -33,6 +34,7 @@ img{
 `;
 
 const Section1 = (props) => {
+  const navigate = useNavigate();
   return (
     <Wrapper className={"section_1 " + props.class}>
       <div className="section_container">
@@ -47,7 +49,7 @@ const Section1 = (props) => {
             Wanna is a real time chat app that is develop to chat without downloading any app or software, it work in all deveices which have internet connection and a sofware in which you are accessing this site.
           </p>
           <br/>
-          <GetStarted>
+          <GetStarted onClick={() => { navigate("/chat-page")}}>
             Get Started
             <span className="arrow-container">
               <IoIosArrowRoundForward className="upperlayer"/>
@@ -75,6 +77,9 @@ justify-content: center;
   padding: 0px 50px;
 }
 
+@media( max-width: 600px){
+  padding: 0px 20px;
+}
 
 
 .section_container{

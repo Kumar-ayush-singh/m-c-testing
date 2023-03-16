@@ -9,7 +9,22 @@ const Message = ({ message }) => {
   return (
     <Wrapper>
       <div className={"message" + classes}>
-        <div className="msg-text">{ text }</div>
+        <div className="msg-text">
+
+          {/*finding emoji and scaling it */}
+          {
+            text.length === 2 && text[0].codePointAt(0) > 8986 && text[0].codePointAt(0) < 129511 ? 
+            <span className="only-emoji">{text}</span>
+            :
+            <>
+            {[...text].map((char) => {
+              return char.codePointAt(0) > 8986 && char.codePointAt(0) < 129511 ?
+                <span className="txt-emoji">{char}</span>
+                :
+                <>{char}</>
+            })}
+          </>}
+        </div>
         {/* <div className="msg-time">06:36 PM</div> */}
       </div>
     </Wrapper>
@@ -63,12 +78,21 @@ const Wrapper = styled.section`
       padding: 20px 10px;
       display: flex;
       word-break: break-word;
-      white-space: preWrap;
+      white-space: pre-wrap;
       // justify-content: center;
       align-items: center;
       // min-height: 60px;
       border-radius: 15px;
       background-color: var(--thm-transparent-color);
+
+      .txt-emoji{
+        font-size: 1.5em;
+        line-height: 1;
+      }
+      .only-emoji{
+        font-size: 2em;
+        line-height: 1;
+      }
     }
   }
 `;

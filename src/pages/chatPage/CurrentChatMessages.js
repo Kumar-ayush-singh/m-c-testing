@@ -29,6 +29,11 @@ const CurrentChat = () => {
 
   const handlMsgeSubmit = async () => {
 
+    if(msg.trim().length === 0){
+      setMsg("");
+      return;
+    }
+
     try {
       // const { data } = await axios.post("http://localhost:3000/api/message/", {
       //   chatId: chatId,
@@ -100,10 +105,18 @@ const CurrentChat = () => {
     if(messageContainer.current){
       messageContainer.current.scrollTo(0, messageContainer.current.scrollHeight);
     }
+
   }, [messages]);
 
+  // useEffect( ()=> {
+  //   console.error(textarea);
+  //   if(textarea.current){
+  //     textarea.current.focus();
+  //   }
+  //   window.navigator.vibrate(1000);
+  // })
 
-  let a = false;
+
   return (
     <>
       {
@@ -200,7 +213,20 @@ const CurrentChat = () => {
                     focus="true"
                     ref={textarea}
                     value={msg}
-                    onChange={(e) => setMsg(e.target.value)}
+                    onChange={ (e) => setMsg(e.target.value) }
+                    virtualkeyboardpolicy="manual"
+                    onClick={ () => {
+                      textarea.current.removeAttribute("virtualkeyboardpolicy");
+                      // textarea.current.setAttribute("virtualkeyboardpolicy", "manual");
+                      // textarea.current.inputMode="null";
+                      // navigator.virtualKeyboard.show();
+                    } }
+                    onBlur={
+                      (e)=>{
+                        e.currentTarget.focus();
+                      }
+                    }
+                    autoFocus
                   ></textarea>
                 </div>
                 <div>
@@ -361,6 +387,10 @@ const Wrapper = styled.section`
       position: relative;
       margin-right: -20px;
 
+      @media (max-width: 450px){
+        margin-right: -5px;
+      }
+
       .msg-404{
         height: 100%;
         width: 100%;
@@ -440,7 +470,7 @@ const Wrapper = styled.section`
           resize: none;
           grid-area: 1/1/2/2;
         }
-        &>textarea:placeholder{
+        &>textarea::placeholder{
           color: var(--thm-transparent2-color);
         }
       }

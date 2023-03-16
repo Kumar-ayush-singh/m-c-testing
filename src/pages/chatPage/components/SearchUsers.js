@@ -37,8 +37,8 @@ const SearchUsers = () => {
 
   return (
     <Wrapper>
-      {users.map(({name, _id}, i) => {
-          return _id === user.userId ? null : <UserCard key={i} name={name} Id={_id} />
+      {users.map(({name, _id, avatar}, i) => {
+          return _id === user.userId ? null : <UserCard key={i} name={name} Id={_id} avatar={avatar} />
       })}
     </Wrapper>
   );

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { IoIosClose, IoIosMenu } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -29,7 +29,7 @@ background: var(--thm-background-color);
   gap: 20px;
   flex-direction: row-reverse;
 
-  --nav-padding: 15px 50px;
+  --nav-padding: 15px 20px;
 }
 
 
@@ -139,18 +139,33 @@ const Navbar = () => {
 
   const [navState, setNavState] = useState(false);
 
-  window.addEventListener("scroll", (event)=>{
+  const toggleNav = () => {
+    setNavState(!navState);
+  }
+
+
+  function handelScroll(e){
     if(window.scrollY > 80){
       setNavClass('translusent');
     }
     else{
       setNavClass('');
     }
-  });
-
-  const toggleNav = () => {
-    setNavState(!navState);
   }
+
+  useEffect( () => {
+    window.addEventListener("scroll", handelScroll);
+    const mobMenu = document.getElementById("mobile-menu");
+    if(mobMenu){
+      mobMenu.addEventListener("touchmove", (e) => {
+        e.preventDefault();
+      });
+    }
+
+    return ( () => {
+      window.removeEventListener("scroll", handelScroll);
+    })
+  },[])
 
   const [NavClass, setNavClass] = useState('');
   const user = useSelector((store) => store.user);
@@ -165,7 +180,7 @@ const Navbar = () => {
       <div className="hamberg">
         <IoIosMenu onClick={toggleNav}/>
       </div>
-      <div className={navState ? "show-mobile-nav": ""}>
+      <div className={navState ? "show-mobile-nav": ""} id="mobile-menu">
         <div className="close-nav">
           <IoIosClose onClick={toggleNav}/>
         </div>

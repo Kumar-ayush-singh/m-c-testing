@@ -8,9 +8,10 @@ import { setChatSection, setMobileViewSection } from "../../../../store/slices/c
 import { HOST_URL, PORT } from "../../../../util/hostDetails";
 import { getToken } from "../../../../util/localStorage";
 import { logOutUser } from "../../../../store/slices/userPageSlice";
+import getAvatarSvg from "../../../../util/allAvatar";
 
 
-const UserCard = ({ name, Id }) => {
+const UserCard = ({ name, Id, avatar }) => {
   console.log(name + " : " + Id);
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.user);
@@ -52,12 +53,12 @@ const UserCard = ({ name, Id }) => {
     <StyledCard>
       <div className="card" onClick={createChat}>
         <div className="img-notification-container">
-          <img src={dummuPic} alt="" />
+          <img src={getAvatarSvg(avatar)} alt="" />
         </div>
         <div className="card-info">
           <h5>{name}</h5>
         </div>
-        <span className={ onlineUsers[receiverId] ? "online" : "offline"}></span>
+        <span className={ onlineUsers[Id] ? "online" : "offline"}></span>
       </div>
     </StyledCard>
   );

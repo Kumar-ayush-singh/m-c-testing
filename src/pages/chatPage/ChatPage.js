@@ -9,6 +9,18 @@ import ChatNavBar from "./components/chatNavBar";
 // import Navbar from "../../components/helper/Navbar";
 
 
+function openFullscreen(e) {
+  // const elem = e.currentTarget;
+  // if (elem.requestFullscreen) {
+  //   elem.requestFullscreen();
+  // } else if (elem.webkitRequestFullscreen) { /* Safari */
+  //   elem.webkitRequestFullscreen();
+  // } else if (elem.msRequestFullscreen) { /* IE11 */
+  //   elem.msRequestFullscreen();
+  // }
+  e.currentTarget.scrollTo(0, 1);
+}
+
 
 const ChatPage = () => {
 
@@ -49,10 +61,14 @@ const ChatPage = () => {
     }
   }, []);
 
+  useEffect( () => {
+    window.scrollTo(0,1);
+  })
+
   return (
     <>
       {/* <Navbar/> */}
-      <Wrapper>
+      <Wrapper onLoad={ openFullscreen }>
         <div className={(console.warn(mobileViewSection) || mobileViewSection === "currentChatContainer" ? 
             "show-current-message-container " : "") + "container"
           }
@@ -81,6 +97,10 @@ const Wrapper = styled.section`
   height: var(--calculated-vh, 100vh);
   overflow: hidden;
   position: relative;
+
+  &:fullscreen, &::backdrop{
+    background-color: var(--thm-background-color);
+  }
 
   *{
     color: white;

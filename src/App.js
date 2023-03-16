@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Loading from "./components/helper/loading";
 import WithAuth from "./util/authHOC";
 import { useSelector } from "react-redux";
+import SelectAvatar from "./pages/auth/selectAvatar";
 
 //lazy loadded modules
 const Auth = lazy( () => import("./pages/auth/Auth") );
@@ -25,6 +26,9 @@ function handleResize(){
 
 const App = () => {
   const { isLogedIn } = useSelector(state => state.user);
+
+  let vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--inner-height', `${vh}px`)
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
@@ -46,6 +50,11 @@ const App = () => {
         <Route path="/chat-page" element={
           <WithAuth isLogedIn={isLogedIn}>
             <ChatPage />
+          </WithAuth>
+        } />
+        <Route path="/select-avatar" element={
+          <WithAuth isLogedIn={isLogedIn}>
+            <SelectAvatar />
           </WithAuth>
         } />
       </Routes>

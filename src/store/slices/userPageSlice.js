@@ -8,8 +8,10 @@ import { toast } from "react-toastify";
 import { HOST_URL, PORT } from "../../util/hostDetails";
 import {
     addUserToLocalStorage,
+    getToken,
     getUserFromLocalStorage,
     removeUserFromLocalStorage,
+    updateAvatar,
 } from "../../util/localStorage";
 import socket from "../../util/socket.io";
 
@@ -59,6 +61,37 @@ export const loginUser = createAsyncThunk(
         }
     }
 );
+export const setAvatar = createAsyncThunk(
+    "user/setAvatar",
+    async (avatarNum, thunkAPI) => {
+        try{
+            const token = getToken();
+            if(!token){
+                thunkAPI.dispatch(logOutUser);
+                return thunkAPI.rejectWithValue('401');
+            }
+            const resp = await axios.post(
+                `${HOST_URL}:${PORT}/api/user/set-avatar`,
+                avatarNum = {
+                    avatar: avatarNum,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                }
+            );
+            updateAvatar(resp.data);
+            return resp.data;
+        }
+        catch (error) {
+            if(error.response.data){
+                return thunkAPI.rejectWithValue(error.response.data);
+            }
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+)
 
 const userSlice = createSlice({
     name: "user",
@@ -123,7 +156,13 @@ const userSlice = createSlice({
                 toast.error(error, {
                     position: "bottom-right"
                 });
-            });
+            })
+            .addCase(setAvatar.fulfilled, (state, { payload }) => {
+                state.user.avatar = payload;
+                toast.success("Avatar changed sucessfully. ", {
+                    position: "bottom-right",
+                });
+            })
     },
 });
 

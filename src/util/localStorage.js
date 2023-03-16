@@ -16,4 +16,12 @@ export const addUserToLocalStorage = (user) => {
     const result = localStorage.getItem("user");
     return result ? JSON.parse(result).token : false;
   }
+
+  export const updateAvatar = (avatarName) => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if(userData){
+      userData.user.avatar = avatarName;
+      localStorage.setItem("user", JSON.stringify(userData));
+    }
+  }
   
