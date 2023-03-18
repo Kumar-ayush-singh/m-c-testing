@@ -1,8 +1,8 @@
 import { io } from "socket.io-client";
 import { HOST_URL, PORT } from "./hostDetails";
 
-const RECONNECTION_LIMIT = 10000;
-const socket = io(`${HOST_URL}:${PORT}`); //add option in second parameter an object
+const RECONNECTION_LIMIT = 10;
+const socket = io(`${HOST_URL}`); //add option in second parameter an object
 
 export default socket;
 
@@ -24,3 +24,7 @@ socket.io.on("reconnect_attempt", (attempt)=>{
         socket.disconnect();
     }
 })
+
+window.addEventListener('online', () => {
+    socket.connect();
+});

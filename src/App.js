@@ -8,8 +8,10 @@ import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import Loading from "./components/helper/loading";
 import WithAuth from "./util/authHOC";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SelectAvatar from "./pages/auth/selectAvatar";
+import PageNotFound from "./components/functional/pageNotFound";
+import Offline from "./components/functional/offline";
 
 //lazy loadded modules
 const Auth = lazy( () => import("./pages/auth/Auth") );
@@ -25,14 +27,15 @@ function handleResize(){
 
 
 const App = () => {
+  const dispatch = useDispatch();
   const { isLogedIn } = useSelector(state => state.user);
 
   let vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--inner-height', `${vh}px`)
+  document.documentElement.style.setProperty('--inner-height', `${vh}px`);
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-
+    
     return(
       () => {
         window.removeEventListener("resize", handleResize);
@@ -57,9 +60,11 @@ const App = () => {
             <SelectAvatar />
           </WithAuth>
         } />
+        <Route path="*" element={<PageNotFound/>}/>
       </Routes>
       <Footer />
       <ToastContainer/>
+      <Offline/>
     </Suspense>
     </>
   );

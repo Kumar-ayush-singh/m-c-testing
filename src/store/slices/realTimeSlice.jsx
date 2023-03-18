@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     onlineUsers: {},
-    chatNotifications: {}
+    chatNotifications: {},
+    isOnline: window.navigator.onLine,
 }
 
 const realTimeSlice = createSlice({
@@ -22,8 +23,8 @@ const realTimeSlice = createSlice({
             console.log(`${payload} gone offline`);
         },
         setChatNotification: (state, { payload }) => {
-            if(payload.dataFromDB){
-                if(state.chatNotifications[payload.chatId]){
+            if (payload.dataFromDB) {
+                if (state.chatNotifications[payload.chatId]) {
                     return;
                 }
                 state.chatNotifications[payload.chatId] = {
@@ -32,17 +33,17 @@ const realTimeSlice = createSlice({
                     lastViewedMessage: payload.lastViewedMessage,
                 }
             }
-            else if(state.chatNotifications[payload.chatId]){
+            else if (state.chatNotifications[payload.chatId]) {
                 const numb = JSON.stringify(state.chatNotifications[payload.chatId].newMsgCount);
 
-                //removing unread tag when message already open
-                if(!Number(numb)){
+                //removing unread tag when message already open and new msg come
+                if (!Number(numb)) {
                     state.chatNotifications[payload.chatId].lastViewedMessage = state.chatNotifications[payload.chatId].lastMessage;
                 }
                 state.chatNotifications[payload.chatId].newMsgCount = Number(numb) + 1;
                 state.chatNotifications[payload.chatId].lastMessage = payload;
             }
-            else{
+            else {
                 state.chatNotifications[payload.chatId] = {
                     newMsgCount: 1,
                     lastMessage: payload,
@@ -52,20 +53,28 @@ const realTimeSlice = createSlice({
         removeChatNotification: (state, { payload }) => {
             state.chatNotifications[payload].newMsgCount = 0;
         },
-        updateLastMessage: ( state, { payload }) => {
+        updateLastMessage: (state, { payload }) => {
             state.chatNotifications[payload.chatId].lastMessage = {
                 _id: payload._id,
                 senderId: payload.senderId,
                 text: payload.text,
             }
         },
-        updateViewedMessage: ( state, { payload } ) => {
-            if(state.chatNotifications[payload]){
+        updateViewedMessage: (state, { payload }) => {
+            if (state.chatNotifications[payload]) {
                 state.chatNotifications[payload].lastViewedMessage = JSON.parse(JSON.stringify(state.chatNotifications[payload].lastMessage));
             }
         }
     }
 })
 
-export const { setOnlineUsers, addOnlineUser, removeOfflineUser, setChatNotification, removeChatNotification, updateViewedMessage, updateLastMessage } = realTimeSlice.actions;
+export const { 
+    setOnlineUsers, 
+    addOnlineUser, 
+    removeOfflineUser, 
+    setChatNotification, 
+    removeChatNotification, 
+    updateViewedMessage, 
+    updateLastMessage
+} = realTimeSlice.actions;
 export default realTimeSlice.reducer;

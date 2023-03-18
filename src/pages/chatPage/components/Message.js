@@ -1,10 +1,17 @@
-import React from "react";
+import React, { Fragment, useRef } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 
 const Message = ({ message }) => {
 
+  const { chatNotifications } = useSelector(store => store.realTime );
+  const { Id: chatId } = useSelector(store => store.chat.currentChat);
+
   const { text, classes } = message;
+  const msgRef = useRef(null);
+
+
 
   return (
     <Wrapper>
@@ -17,11 +24,11 @@ const Message = ({ message }) => {
             <span className="only-emoji">{text}</span>
             :
             <>
-            {[...text].map((char) => {
+            {[...text].map((char, i) => {
               return char.codePointAt(0) > 8986 && char.codePointAt(0) < 129511 ?
-                <span className="txt-emoji">{char}</span>
+                <span className="txt-emoji" key={i} >{char}</span>
                 :
-                <>{char}</>
+                <Fragment key={i}>{char}</Fragment>
             })}
           </>}
         </div>

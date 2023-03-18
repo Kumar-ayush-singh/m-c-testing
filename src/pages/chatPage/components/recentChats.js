@@ -8,15 +8,18 @@ import { setChatSection } from "../../../store/slices/chatNavSlice";
 import { getToken } from "../../../util/localStorage";
 import { logOutUser } from "../../../store/slices/userPageSlice";
 import { HOST_URL, PORT } from "../../../util/hostDetails";
+import Loading from "../../../components/helper/loading";
 
 
-const RecentChats = () => {
+const RecentChats = ({search}) => {
     const dispatch = useDispatch();
     const { user } = useSelector((store) => store.user);
+    const [dataFatching, setDataFatching] = useState(true);
     const { allChats, newChat } = useSelector( store => store.chat );
 
 
     const getChats = async () => {
+
         try {
             const token = getToken();
             if(!token){
@@ -24,7 +27,7 @@ const RecentChats = () => {
                 return;
             }
             const { data } = await axios.get(
-                `${HOST_URL}:${PORT}/api/chat/${user.userId}`,
+                `${HOST_URL}/api/chat/${user.userId}`,
                 {
                   headers: {
                     Authorization: `Bearer ${token}`
@@ -32,15 +35,11 @@ const RecentChats = () => {
                 }
             );
 
+            setDataFatching(false);
             dispatch(setAllChats(data));
             
             console.log("All Chats of user : ");
             console.log(data);
-
-
-            // if(data.length < 1){
-            //     dispatch(setChatSection("searchUsers"));
-            // }
         } catch (error) { }
     };
 
@@ -58,16 +57,21 @@ const RecentChats = () => {
         <Wrapper>
             {allChats.length === 0 ? (
                 <div className="chat404">
-                    <div>
-                        <div>No Chat Available.</div>
-                        <button onClick={startNewHandler}>Start New</button>
-                    </div>
+                    {
+                        dataFatching ?
+                        <Loading height="100%"/> 
+                        : 
+                        <div className="no-chat">
+                            <div>No Chat Available.</div>
+                            <button onClick={startNewHandler}>Start New</button>
+                        </div>
+                    }
                 </div>
             )
             :
             (
                 allChats.map((chat, i) => {
-                    return <ChatCard key={i} chat={chat} />;
+                    return String(chat.otherMember.name).toLowerCase().includes(search) ? <ChatCard key={i} chat={chat} /> : null
                 })
             )}
         </Wrapper>
@@ -91,7 +95,7 @@ height: 100%;
         font-weight: 500;
 
 
-        &>div{
+        &>div.no-chat{
             width: 100%;
             padding: 20px;
             margin-top: -50px;

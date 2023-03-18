@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import dummuPic from "../../assets/dummy-pic.jpeg";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentReceiver, startConversation } from "../../../../store/slices/chatSlice";
 import StyledCard from "../../../../components/functional/styledCard";
@@ -40,19 +39,15 @@ const ChatCard = (props) => {
 
 
   useEffect(() => {
-    console.warn(props);
-    if(props.chat.lastMessage){
-      dispatch(setChatNotification({
-        chatId: props.chat._id,
-        lastMessage: props.chat.lastMessage,
-        newMsgCount: (props.chat.lastMessage.senderId !== user.userId) ? props.chat.unreadMsgCount : 0,
-        lastViewedMessage: props.chat.lastViewedMessage,
-        dataFromDB: true,
-      }));
-    }
+    dispatch(setChatNotification({
+      chatId: props.chat._id,
+      lastMessage: props.chat.lastMessage || {},
+      newMsgCount: (props.chat.lastMessage && props.chat.lastMessage.senderId !== user.userId) ? props.chat.unreadMsgCount : 0,
+      lastViewedMessage: props.chat.lastViewedMessage || {},
+      dataFromDB: true,
+    }));
   }, [props.chat]);
 
-  console.warn(props);
   const isChatOpen = props.chat._id === currentChat.Id;
 
   return (

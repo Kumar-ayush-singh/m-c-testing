@@ -2,10 +2,10 @@ import styled from "styled-components"
 
 
 
-const Loading = () => {
+const Loading = ({height}) => {
     return (
-        <Wrapper>
-            <div className="loading-contianer">
+        <Wrapper height={height}>
+            <div className="loading-container">
                 <div className="loading-animation"></div>
                 <div className="loading">Loading...</div>
             </div>
@@ -14,48 +14,36 @@ const Loading = () => {
 }
 
 const Wrapper = styled.div`
-position: fixed;
-top: 0;
-left: 0;
-bottom: 0;
-right: 0;
+width: 100%;
+height: ${props => props.height ? props.height: "var(--calculated-vh, 100vh)"};
 display: flex;
 justify-content: center;
 align-items: center;
 
-&>loading-container{
+&>.loading-container{
     padding: 20px 30px;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
     color: yellow;
 
-    &::after, &::before{
-        content: "";
-        display: block;
-        border: 20px solid blue;
-        position: absolute;
-    }
-    &::before{
-        top: 0;
-        left: 0;
-        border-right: 0px;
-        border-bottom: 0px
-    }
-    &::after{
-        bottom: 0;
-        right: 0;
-        border-left: 0px;
-        border-top: 0px;
+    &>div.loading-animation{
+        border-radius: 50%;
+        border: 3px solid gray;
+        border-top: 5px solid white;
+        height: 30px;
+        width: 30px;
+        animation : spin 0.6s linear infinite;
     }
 
-    &>div.loading-animation{
-        border: 3px solid gray;
-        border-top: 5px solid black;
-        border-radius: 50%;
-        height: 50px;
-        width: 50px;
+    @keyframes spin{
+        0% {
+            transform: rotate(0deg);
+        }
+        100%{
+            transform: rotate(360deg);
+        }
     }
 }
 `

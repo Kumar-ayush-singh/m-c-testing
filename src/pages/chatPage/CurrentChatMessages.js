@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import Message from "./components/Message";
@@ -13,6 +13,8 @@ import socket from "../../util/socket.io";
 import UnreadTag from "./components/cards/unreadTag";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { setMobileViewSection } from "../../store/slices/chatNavSlice";
+import getAvatarSvg from "../../util/allAvatar";
+import { showConnectionToast } from "../../components/functional/offline";
 
 
 const CurrentChat = () => {
@@ -22,6 +24,7 @@ const CurrentChat = () => {
   const dispatch = useDispatch();
   const textarea = useRef(null);
   const messageContainer = useRef(null);
+  const msgRef = useRef(null);
 
 
   const [msg, setMsg] = useState("");
@@ -31,6 +34,11 @@ const CurrentChat = () => {
 
     if(msg.trim().length === 0){
       setMsg("");
+      return;
+    }
+
+    if(!window.navigator.onLine){
+      showConnectionToast();
       return;
     }
 
@@ -103,7 +111,12 @@ const CurrentChat = () => {
 
   useEffect( () => {
     if(messageContainer.current){
-      messageContainer.current.scrollTo(0, messageContainer.current.scrollHeight);
+      // messageContainer.current.scrollTo(0, messageContainer.current.scrollHeight);
+    }
+    if(msgRef.current){
+      msgRef.current.scrollIntoView({
+        behavior: "smooth"
+      })
     }
 
   }, [messages]);
@@ -134,7 +147,7 @@ const CurrentChat = () => {
                 }}>
                   <IoIosArrowRoundBack/>
                   <div className="img-container">
-                    <img src="userpic" alt="chat user" />
+                    <img src={getAvatarSvg(otherMember.avatar)} alt="chat user" />
                   </div>
                 </div>
                 <div>
@@ -178,7 +191,7 @@ const CurrentChat = () => {
                   
                   messages.map((message, i) => {
                     return (
-                      <>
+                      <Fragment key={i}>
                       {
                         chatNotifications[chatId].lastViewedMessage._id === message._id ?
                         <>
@@ -186,14 +199,34 @@ const CurrentChat = () => {
                           <UnreadTag/>
                         </>
                         :
-                        <Message key={i} message={message} />
+                        <>
+                        {
+                          chatNotifications[chatId].lastMessage._id === message._id ?
+                          <div ref={msgRef}>
+                            <Message key={i} message={message} />
+                          </div>
+                          :
+                          <Message key={i} message={message} />
+                        }
+                        </>
                       }
-                      </>
-                    )
+                      </Fragment>
+                    );
                   })
                   :
                   messages.map((message, i) => {
-                    return (<Message key={i} message={message} />);
+                    return (
+                      <Fragment key={i}>
+                      {
+                        chatNotifications[chatId] && chatNotifications[chatId].lastMessage._id === message._id ?
+                        <div ref={msgRef}>
+                          <Message key={i} message={message} />
+                        </div>
+                        :
+                        <Message key={i} message={message} />
+                      }
+                      </Fragment>
+                    );
                   })
                 ) : (
                   <h2 className="msg-404">
@@ -213,6 +246,14 @@ const CurrentChat = () => {
                     focus="true"
                     ref={textarea}
                     value={msg}
+                    onKeyDown={ (e) => {
+                      if(!e.shiftKey && e.key === 'Enter'){
+                        e.preventDefault();
+                        if(!e.repeat){
+                          handlMsgeSubmit();
+                        }
+                      }
+                    }}
                     onChange={ (e) => setMsg(e.target.value) }
                     virtualkeyboardpolicy="manual"
                     onClick={ () => {

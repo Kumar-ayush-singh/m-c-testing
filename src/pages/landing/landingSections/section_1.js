@@ -7,13 +7,14 @@ import { useNavigate } from "react-router-dom";
 const ImageContainer = styled.div`
 height: 100%;
 flex-shrink: 1;
+max-height: 800px;
 
 @media (max-width: 1300px){
   width: 100%;
   height: 600px;
 
   @media(min-height: 600px){
-    height: 800px;
+    height: 100%;
   }
 }
 
@@ -23,7 +24,7 @@ img{
   z-index: -10;
 
   @media (min-height: 600px){
-    height: 800px;
+    height: 100%;
   }
   @media (max-width: 1300px){
     position: absolute;
@@ -84,6 +85,7 @@ justify-content: center;
 
 .section_container{
   width: 100%;
+  height: calc(100vh - 80px);
   display: flex;
   gap: 50px;
   justify-content: center;

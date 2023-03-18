@@ -6,11 +6,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { getToken } from "../../../util/localStorage";
 import { logOutUser } from "../../../store/slices/userPageSlice";
 import { HOST_URL, PORT } from "../../../util/hostDetails";
+import Loading from "../../../components/helper/loading";
+import { setAllUsers } from "../../../store/slices/chatSlice";
 
 
-const SearchUsers = () => {
+const SearchUsers = ({search}) => {
   const { user } = useSelector(state => state.user)
-  const [users, setUsers] = useState([]);
+  const { allUsers } = useSelector(state => state.chat);
+  const [dataFatching, setDataFatching] = useState(true);
   const dispatch = useDispatch();
 
   const getAllUser = async () => {
@@ -19,14 +22,16 @@ const SearchUsers = () => {
         dispatch(logOutUser());
         return;
       }
-    const { data } = await axios.get(`${HOST_URL}:${PORT}/api/user/get-all/`,
+    const { data } = await axios.get(`${HOST_URL}/api/user/get-all/`,
     {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
-    setUsers(data);
-    console.log(users);
+    dispatch(setAllUsers(data));
+    setDataFatching(false);
+    console.log("All users : ")
+    console.log(data);
   };
 
   
@@ -37,35 +42,35 @@ const SearchUsers = () => {
 
   return (
     <Wrapper>
-      {users.map(({name, _id, avatar}, i) => {
-          return _id === user.userId ? null : <UserCard key={i} name={name} Id={_id} avatar={avatar} />
-      })}
+      {
+        dataFatching && !allUsers.length ? <div className="user404"><Loading height="100%"/></div> 
+        :
+        <>
+        {allUsers.map(({name, _id, avatar}, i) => {
+            return _id === user.userId ? 
+              null 
+              :  
+              String(name).toLowerCase().includes(search) ? 
+                <UserCard key={i} name={name} Id={_id} avatar={avatar}/> 
+                : null
+        })}
+        </>
+      }
     </Wrapper>
   );
 };
 const Wrapper = styled.section`
-  .search-bar-user {
+  height: 100%;
+  .user404{
+    width: 100%;
+    height: 100%;
     display: flex;
-    /* background-color: red; */
     justify-content: center;
     align-items: center;
-    gap: 1rem;
-    margin: 1rem auto;
-
-    input {
-      border: none;
-      border-radius: 2px 2px;
-      padding: 0.2 1rem;
-      font-size: 1.2rem;
-    }
-    button {
-      padding: 0.2rem 1rem;
-      border-radius: 10px 10px;
-      border: none;
-      font-size: 1rem;
-    }
-    button:hover {
-    }
+    padding: 30px;
+    border-radius: 15px;
+    background: linear-gradient(var(--thm-transparent-color), transparent);
+    font-weight: 500;
   }
 `;
 export default SearchUsers;

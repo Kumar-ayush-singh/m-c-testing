@@ -5,7 +5,8 @@ import { getToken } from "../../util/localStorage";
 import { logOutUser } from "./userPageSlice";
 
 const initialState = {
-  allChats: [], //[{_id, members[], newMessage, status}]
+  allChats: [],
+  allUsers: [],
   newChat: null,
   currentChat: {
     Id: "",
@@ -65,7 +66,7 @@ export const startConversation = createAsyncThunk(
         return thunkApi.rejectWithValue("401");
       }
       const res = await axios.get(
-        `${HOST_URL}:${PORT}/api/message/${payload.chatId}`,
+        `${HOST_URL}/api/message/${payload.chatId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -101,13 +102,11 @@ const chatSlice = createSlice({
       console.log(`current co-chater is ${payload.name} with id : ${payload.Id}` );
       state.currentChat.otherMember.name = payload.name;
       state.currentChat.otherMember._id = payload.Id;
+      state.currentChat.otherMember.avatar = payload.avatar;
     },
     setAllChats: (state, { payload }) => {
       state.allChats = payload;
     },
-    // addNewChat: ( state, { payload }) => {
-    //   if()
-    // },
     moveChatToTop: (state, { payload }) => {
       let chatToMove;
       const AllShiftedChat = state.allChats.filter((chat) => {
@@ -132,6 +131,9 @@ const chatSlice = createSlice({
       state.currentChat.Id = "";
       state.currentChat.messages = [];
       state.currentChat.otherMember = {};
+    },
+    setAllUsers: (state, {payload}) => {
+      state.allUsers = payload;
     }
   },
   extraReducers: (builder) => {
@@ -145,5 +147,5 @@ const chatSlice = createSlice({
 });
 
 
-export const { setChatId, setCurrentReceiver, addChatMessage, setAllChats, moveChatToTop, closeChat} = chatSlice.actions;
+export const { setChatId, setCurrentReceiver, addChatMessage, setAllChats, moveChatToTop, closeChat, setAllUsers} = chatSlice.actions;
 export default chatSlice.reducer;

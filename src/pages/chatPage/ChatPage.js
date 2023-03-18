@@ -69,7 +69,7 @@ const ChatPage = () => {
     <>
       {/* <Navbar/> */}
       <Wrapper onLoad={ openFullscreen }>
-        <div className={(console.warn(mobileViewSection) || mobileViewSection === "currentChatContainer" ? 
+        <div className={(mobileViewSection === "currentChatContainer" ? 
             "show-current-message-container " : "") + "container"
           }
         >

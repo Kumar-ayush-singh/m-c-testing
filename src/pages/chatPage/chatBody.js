@@ -14,7 +14,12 @@ const ChatBody = () => {
 
   const { chatSection } = useSelector((store) => store.chatNav);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+
   const togleSearching = () => {
+    if(isSearching){
+      setSearchInput("");
+    }
     setIsSearching(!isSearching);
   }
 
@@ -35,7 +40,7 @@ const ChatBody = () => {
             </h3>
           }
           <div className={isSearching ? "searching-container": ""}>
-            <input type="search" className={isSearching ? "searching": ""}/>
+            <input type="search" className={isSearching ? "searching": ""} value={searchInput} onInput={(e) => { setSearchInput(e.currentTarget.value)}}/>
             {
             isSearching ? 
               <FiDelete onClick={togleSearching} className="icon"/> 
@@ -51,10 +56,10 @@ const ChatBody = () => {
       <div className="chat-section-container custom-scroll">
         {
           chatSection === "recentChats" ?
-          <RecentChats/> :
+          <RecentChats search={searchInput}/> :
           chatSection === "groupChats" ? 
-            <GroupChats/>:
-            <SearchUsers />
+            <GroupChats search={searchInput}/>:
+            <SearchUsers search={searchInput}/>
         }
       </div>
     </Wrapper>

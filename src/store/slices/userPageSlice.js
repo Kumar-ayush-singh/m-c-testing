@@ -30,7 +30,7 @@ export const registerUser = createAsyncThunk(
     async (user, thunkAPI) => {
         try {
             const resp = await axios.post(
-                `${HOST_URL}:${PORT}/api/auth/sign-up`,
+                `${HOST_URL}/api/auth/sign-up`,
                 user
             );
             return resp.data;
@@ -49,7 +49,7 @@ export const loginUser = createAsyncThunk(
         try {
             console.log("running");
             const resp = await axios.post(
-                `${HOST_URL}:${PORT}/api/auth/sign-in`,
+                `${HOST_URL}/api/auth/sign-in`,
                 user
             );
             return resp.data;
@@ -71,7 +71,7 @@ export const setAvatar = createAsyncThunk(
                 return thunkAPI.rejectWithValue('401');
             }
             const resp = await axios.post(
-                `${HOST_URL}:${PORT}/api/user/set-avatar`,
+                `${HOST_URL}/api/user/set-avatar`,
                 avatarNum = {
                     avatar: avatarNum,
                 },

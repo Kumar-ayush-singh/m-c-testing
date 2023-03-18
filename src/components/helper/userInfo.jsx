@@ -3,7 +3,6 @@ import { logOutUser } from "../../store/slices/userPageSlice";
 import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BiLogOutCircle } from "react-icons/bi";
 import getAvatarSvg from "../../util/allAvatar";
 
 
@@ -18,12 +17,18 @@ export default function UserInfo(){
         dispatch(logOutUser());
         navigate("/");
     }
-    const togglePopup = () => {
+    const togglePopup = (e) => {
+        e.stopPropagation();
         if(popupClass){
             setPopupClass('');
         }
         else{
             setPopupClass('show');
+            window.addEventListener('click', ()=>{
+                setPopupClass('');
+            }, {
+                once: true,
+            })
         }
     }
 
@@ -65,10 +70,8 @@ const DropDowncontainer = styled.label`
     position: relative;
     color: white;
     justify-content: flex-end;
-    // background-color: var(--container-background-color);
     border-radius: 8px;
     padding: 10px;
-    // margin-left: 50px;
     font-weight: bold;
 
     .fixed-container{
@@ -83,11 +86,6 @@ const DropDowncontainer = styled.label`
             overflow: hidden;
             display: block;
             background-color: var(--container-background-color);
-
-            // img{
-            //     width: 100%;
-            //     height: 100%;
-            // }
         }
 
         .user-info{
@@ -115,7 +113,6 @@ const DropDowncontainer = styled.label`
 
     .popup-container{
         position: absolute;
-        // background: linear-gradient(var(--thm-primary-color) 1.69%,var(--thm-secondary-color) 63.59%);
         color: white;
         width: 100%;
         max-width: 150px;
@@ -127,13 +124,11 @@ const DropDowncontainer = styled.label`
         transition: 0.15s ease;
         border-radius: 5px;
         pointer-events: none;
-        // box-shadow: 0 2px 5px 0 rgba(var(--shadow-rgb),.26),0 2px 10px 0 rgba(var(--shadow-rgb),.16);
 
         @media(max-width: 850px){
             right: unset;
             left: 0;
             top: 20px;
-            // z-index: -5px;
             transform-origin: center bottom;
         }
         
@@ -153,10 +148,6 @@ const DropDowncontainer = styled.label`
             background: var(--thm-transparent-color);
         }
         li{
-            // display: flex;
-            // justify-content: flex-start;
-            // align-items: center;
-            // gap: 10px;
             padding:10px;
             text-align: center;
             margin: 0;
@@ -174,6 +165,10 @@ const DropDowncontainer = styled.label`
             svg{
                 height: 30px;
                 width: 30px;
+            }
+
+            &:last-child:hover{
+                background: darkred;
             }
         }
     }
