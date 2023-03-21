@@ -124,7 +124,6 @@ position: relative;
       display: flex;
       align-items: center;
       gap: 15px;
-      cursor: pointer;
       width: 100%;
       justify-content: flex-end;
 
@@ -154,6 +153,7 @@ position: relative;
 
       &>svg{
         flex-grow: 0;
+        cursor: pointer;
         flex-shrink: 0;
       }
     }

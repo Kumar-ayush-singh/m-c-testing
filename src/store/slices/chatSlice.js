@@ -59,6 +59,8 @@ export const startConversation = createAsyncThunk(
     console.log("settig Chat id : " + payload.chatId);
     console.log(payload);
 
+    console.error(`time before request ${(new Date()).getTime()}`);
+
     try{
       const token = getToken();
       if(!token){
@@ -74,9 +76,10 @@ export const startConversation = createAsyncThunk(
         }
       );
 
+      console.error(` Request time on Server :- ${res.data.TR} \n Data From Db :- ${res.data.TAD} \n time of Displaying :- ${(new Date()).getTime()}`)
       console.log("got all message");
       return {
-        messages: res.data,
+        messages: res.data.messages,
         userId: payload.userId,
         chatId: payload.chatId
       }

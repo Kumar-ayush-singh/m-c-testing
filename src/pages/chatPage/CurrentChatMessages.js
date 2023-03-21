@@ -15,6 +15,8 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { setMobileViewSection } from "../../store/slices/chatNavSlice";
 import getAvatarSvg from "../../util/allAvatar";
 import { showConnectionToast } from "../../components/functional/offline";
+import MsgDate from "./components/cards/msgDate";
+
 
 
 const CurrentChat = () => {
@@ -25,10 +27,14 @@ const CurrentChat = () => {
   const textarea = useRef(null);
   const messageContainer = useRef(null);
   const msgRef = useRef(null);
+  // const newMsgCountRef = useRef(false);
+  // console.error(newMsgCountRef.current);
+  const [topDate, setTopDate] = useState('');
 
 
   const [msg, setMsg] = useState("");
   const [isMessagesScrolled, setIsMessagesScrolled] = useState(true);
+
 
   const handlMsgeSubmit = async () => {
 
@@ -65,23 +71,44 @@ const CurrentChat = () => {
           message: { ...(res.data) },
           userId: user.userId
         }));
+
+        
         dispatch(updateLastMessage({ ...res.data }));
 
         //remove unred msg tag
-        dispatch(updateViewedMessage(chatId));
+        dispatch(removeChatNotification(chatId));
         dispatch(moveChatToTop({chatId: chatId}));
       })
       setMsg("");
     } catch (error) {
       console.log(error);
       //remove unred msg tag
-      dispatch(updateViewedMessage(chatId));
+      dispatch(removeChatNotification(chatId));
     }
   };
+
+  function findTopDate(){
+    const allMsgDate = document.querySelectorAll(".msgDate");
+    for(let i=allMsgDate.length - 1; i>=0; i--){
+      if(messageContainer.current.scrollTop >= allMsgDate[i].offsetTop){
+        setTopDate(allMsgDate[i].innerText);
+        if(i === allMsgDate.length - 1){
+          setTopDate('notDisplay');
+        }
+        if(i===0){
+          setTopDate('notDisplay');
+        }
+        break;
+      }
+    }
+  }
+
 
   function handelScroll(e) {
     const isfullyScrolled = (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight);
     setIsMessagesScrolled(isfullyScrolled);
+
+    findTopDate();
   }
 
 
@@ -91,8 +118,11 @@ const CurrentChat = () => {
       if(message.chatId === chatId){
         dispatch(addChatMessage({message: {...message}, userId: user.userId}));
         dispatch(updateLastMessage({...message}));
-        dispatch(updateViewedMessage(chatId));
-        socket.emit("message-viewed", chatId, message._id, (res)=> {
+        dispatch(removeChatNotification(chatId));
+        socket.emit("message-viewed", chatId, {
+          _id: message._id,
+          senderId: message.senderId,
+        }, (res)=> {
           console.log("message is viewed in current message with status " + res.status);
         });
       }
@@ -104,31 +134,35 @@ const CurrentChat = () => {
       dispatch(moveChatToTop({chatId: message.chatId}));
     });
 
+    //when msg viewed by receiver
+    socket.on("message-viewed-by-receiver", (lastViewedMessageId) => {
+      console.error("message is viewed by receiver " + lastViewedMessageId);
+      dispatch(updateViewedMessage({chatId: chatId, msgId: lastViewedMessageId}))
+    })
+
     return () => {
       socket.off("server-send-msg");
+      socket.off("message-viewed-by-receiver");
     }
   }, [chatId]);
 
   useEffect( () => {
     if(messageContainer.current){
-      // messageContainer.current.scrollTo(0, messageContainer.current.scrollHeight);
+      messageContainer.current.scrollTo(0, messageContainer.current.scrollHeight);
     }
     if(msgRef.current){
       msgRef.current.scrollIntoView({
         behavior: "smooth"
       })
+      findTopDate(); 
     }
 
   }, [messages]);
 
-  // useEffect( ()=> {
-  //   console.error(textarea);
-  //   if(textarea.current){
-  //     textarea.current.focus();
-  //   }
-  //   window.navigator.vibrate(1000);
-  // })
 
+
+  let gotViewedMsg = false;
+  let lastDate;
 
   return (
     <>
@@ -144,6 +178,7 @@ const CurrentChat = () => {
                 <div className="back-container" onClick={()=>{
                   dispatch(setMobileViewSection("chatBody"));
                   dispatch(closeChat());
+                  dispatch(removeChatNotification(chatId));
                 }}>
                   <IoIosArrowRoundBack/>
                   <div className="img-container">
@@ -185,49 +220,53 @@ const CurrentChat = () => {
                 onScroll={(e) => handelScroll(e)}
               >
                 {messages.length > 0 ? (
-                  (chatNotifications[chatId] && chatNotifications[chatId].lastViewedMessage) &&
-                  !(chatNotifications[chatId].lastViewedMessage._id === chatNotifications[chatId].lastMessage._id ||
-                  chatNotifications[chatId].lastMessage.senderId === user.userId) ?
-                  
+                  <>
+                  <MsgDate topDate={true} date={topDate}/>
+                  {
                   messages.map((message, i) => {
-                    return (
+                    
+                    const jsx = (
                       <Fragment key={i}>
-                      {
-                        chatNotifications[chatId].lastViewedMessage._id === message._id ?
-                        <>
-                          <Message key={i} message={message} />
-                          <UnreadTag/>
-                        </>
-                        :
-                        <>
                         {
-                          chatNotifications[chatId].lastMessage._id === message._id ?
-                          <div ref={msgRef}>
-                            <Message key={i} message={message} />
-                          </div>
-                          :
-                          <Message key={i} message={message} />
+                          (new Date(message.createdAt)).getDate() !== lastDate ?
+                          <MsgDate className="msgDate" date={message.createdAt} /> : null
                         }
-                        </>
-                      }
+
+                        {
+                          chatNotifications[chatId] && 
+                          chatNotifications[chatId].newMsgCount && 
+                          chatNotifications[chatId].lastViewedMessage._id === message._id ?
+                          <>
+                            <Message key={i} message={message} viewed = {!gotViewedMsg}/>
+                            <UnreadTag/>
+                          </>
+                          :
+                          <>
+                          {
+                            chatNotifications[chatId].lastMessage._id === message._id ?
+                            <div ref={msgRef}>
+                              <Message key={i} message={message} viewed = {!gotViewedMsg}/>
+                            </div>
+                            :
+                            <Message key={i} message={message} viewed = {!gotViewedMsg}/>
+                          }
+                          </>
+                        }
                       </Fragment>
                     );
+                    gotViewedMsg = (
+                      !gotViewedMsg && 
+                      chatNotifications[chatId] && 
+                      chatNotifications[chatId].lastViewedMessage._id === message._id
+                    ) ? (true) : (gotViewedMsg);
+                    lastDate = (
+                      lastDate !== message.createdAt
+                    ) ? (new Date(message.createdAt)).getDate() : lastDate;
+                     
+                    return jsx;
                   })
-                  :
-                  messages.map((message, i) => {
-                    return (
-                      <Fragment key={i}>
-                      {
-                        chatNotifications[chatId] && chatNotifications[chatId].lastMessage._id === message._id ?
-                        <div ref={msgRef}>
-                          <Message key={i} message={message} />
-                        </div>
-                        :
-                        <Message key={i} message={message} />
-                      }
-                      </Fragment>
-                    );
-                  })
+                  }
+                  </>
                 ) : (
                   <h2 className="msg-404">
                     No messages found.

@@ -8,13 +8,14 @@ import { HOST_URL } from "../../../../util/hostDetails";
 import { getToken } from "../../../../util/localStorage";
 import { logOutUser } from "../../../../store/slices/userPageSlice";
 import getAvatarSvg from "../../../../util/allAvatar";
-import { setChatNotification } from "../../../../store/slices/realTimeSlice";
+import { removeChatNotification, setChatNotification } from "../../../../store/slices/realTimeSlice";
 
 
 const UserCard = ({ name, Id, avatar }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.user);
-  const { onlineUsers } = useSelector(store => store.realTime);
+  const { onlineUsers, chatNotifications } = useSelector(store => store.realTime);
+  const { currentChat } = useSelector(store => store.chat);
 
   
   const createChat = async () => {
@@ -49,6 +50,11 @@ const UserCard = ({ name, Id, avatar }) => {
         avatar: avatar
       }));
       dispatch(setMobileViewSection("currentChatContainer"));
+
+      //removing noficication of current chat
+      if(chatNotifications[currentChat.Id] && chatNotifications[currentChat.Id].newMsgCount === 0){
+        dispatch(removeChatNotification(currentChat.Id));
+      }
     } catch (error) {
       console.log(error);
     }

@@ -75,6 +75,12 @@ const StyledCard = styled.section`
         overflow: hidden;
         white-space: nowrap;
       }
+      &>div{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 5px;
+      }
 
       span{
         font-size: 12px;
@@ -94,11 +100,16 @@ const StyledCard = styled.section`
       display: block;
       flex-shrink: 0;
       flex-grow: 0;
+      font-size: 12px;
+      color: #d5d5d5;
+      font-weight: 500;
     }
     
-    &>span.online{
+    span.online{
       width: 12px;
       height: 12px;
+      flex-shrink: 0;
+      flex-grow: 0;
       border-radius: 50%;
 
       background: var(--thm-online-status-color);

@@ -50,7 +50,7 @@ const SearchUsers = ({search}) => {
             return _id === user.userId ? 
               null 
               :  
-              String(name).toLowerCase().includes(search) ? 
+              String(name).toLowerCase().includes(search.toLowerCase()) ? 
                 <UserCard key={i} name={name} Id={_id} avatar={avatar}/> 
                 : null
         })}

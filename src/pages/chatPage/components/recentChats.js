@@ -71,7 +71,7 @@ const RecentChats = ({search}) => {
             :
             (
                 allChats.map((chat, i) => {
-                    return String(chat.otherMember.name).toLowerCase().includes(search) ? <ChatCard key={i} chat={chat} /> : null
+                    return String(chat.otherMember.name).toLowerCase().includes(search.toLowerCase()) ? <ChatCard key={i} chat={chat} /> : null
                 })
             )}
         </Wrapper>

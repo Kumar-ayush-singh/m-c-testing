@@ -35,11 +35,6 @@ const realTimeSlice = createSlice({
             }
             else if (state.chatNotifications[payload.chatId]) {
                 const numb = JSON.stringify(state.chatNotifications[payload.chatId].newMsgCount);
-
-                //removing unread tag when message already open and new msg come
-                if (!Number(numb)) {
-                    state.chatNotifications[payload.chatId].lastViewedMessage = state.chatNotifications[payload.chatId].lastMessage;
-                }
                 state.chatNotifications[payload.chatId].newMsgCount = Number(numb) + 1;
                 state.chatNotifications[payload.chatId].lastMessage = payload;
             }
@@ -58,11 +53,20 @@ const realTimeSlice = createSlice({
                 _id: payload._id,
                 senderId: payload.senderId,
                 text: payload.text,
+                createdAt: payload.createdAt,
             }
         },
         updateViewedMessage: (state, { payload }) => {
-            if (state.chatNotifications[payload]) {
-                state.chatNotifications[payload].lastViewedMessage = JSON.parse(JSON.stringify(state.chatNotifications[payload].lastMessage));
+            if (state.chatNotifications[payload.chatId]) {
+                if(payload.msgId){
+                    state.chatNotifications[payload.chatId].lastViewedMessage = {
+                        _id: payload.msgId,
+                    }
+                }
+                else{
+                    state.chatNotifications[payload.chatId].lastViewedMessage = 
+                    JSON.parse(JSON.stringify(state.chatNotifications[payload.chatId].lastMessage));
+                }
             }
         }
     }
